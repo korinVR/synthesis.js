@@ -19,7 +19,7 @@ export default class AudioManager {
 		
 		// Prevent GC
 		// ref. http://stackoverflow.com/questions/24338144/chrome-onaudioprocess-stops-getting-called-after-a-while
-		window.savdReference = this.scriptProcessor;
+		window.savedReference = this.scriptProcessor;
 	}
 	
 	process(e) {
