@@ -2,12 +2,12 @@
 
 Web MIDI API and Web Audio API experiment
 
-You can play with MIDI keys or PC keys (CVBNM<>?). 
+You can play with MIDI keys or PC keys (CVBNM<>?).   
 Chrome 43 or later is required.
 
 # Build
 
-$ npm install
+$ npm install  
 $ npm run watch
 
 # License
