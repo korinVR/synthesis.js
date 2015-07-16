@@ -1,3 +1,5 @@
+import Debug from "./framesynthesis/Debug";
+
 export default class AudioManager {
 	constructor(synthesizer, bufferSize = 1024) {
 		this.synthesizer = synthesizer;
@@ -9,21 +11,27 @@ export default class AudioManager {
 			alert("Web Audio API is not supported");
 		}
 
-		let buffer = new Float32Array(this.bufferSize);
+		this.buffer = new Float32Array(this.bufferSize);
 		
-		this.node = this.context.createScriptProcessor(this.bufferSize, 0, 2);
-		this.node.onaudioprocess = e => {
-			let outL = e.outputBuffer.getChannelData(0);
-			let outR = e.outputBuffer.getChannelData(1);
-			
-			this.synthesizer.render(buffer, this.context.sampleRate);
-			
-			for (let i = 0; i < this.bufferSize; i++) {
-				outL[i] = buffer[i];
-				outR[i] = buffer[i];
-			}
+		this.scriptProcessor = this.context.createScriptProcessor(this.bufferSize, 0, 2);
+		this.scriptProcessor.onaudioprocess = e => this.process(e);
+		this.scriptProcessor.connect(this.context.destination);
+		
+		// Prevent GC
+		// ref. http://stackoverflow.com/questions/24338144/chrome-onaudioprocess-stops-getting-called-after-a-while
+		window.savdReference = this.scriptProcessor;
+	}
+	
+	process(e) {
+		let outL = e.outputBuffer.getChannelData(0);
+		let outR = e.outputBuffer.getChannelData(1);
+		
+		this.synthesizer.render(this.buffer, this.context.sampleRate);
+		
+		for (let i = 0; i < this.bufferSize; i++) {
+			outL[i] = this.buffer[i];
+			outR[i] = this.buffer[i];
 		}
-		this.node.connect(this.context.destination);
 	}
 }
 

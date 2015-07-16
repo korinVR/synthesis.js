@@ -12,6 +12,8 @@ let audioManager = new AudioManager(synthesizer);
 
 let virtualKeyboard = new VirtualKeyboard(synthesizer);
 
+navigator.requestMIDIAccess(/*{ sysex: true }*/).then(onMIDISuccess, onMIDIFailure);
+
 function onMIDISuccess(midiAccess) {
 	Debug.log("MIDI ready");
 
@@ -45,6 +47,5 @@ function onMIDIMessage(event) {
 	}
 }
 
-navigator.requestMIDIAccess(/*{ sysex: true }*/).then(onMIDISuccess, onMIDIFailure);
 
 
