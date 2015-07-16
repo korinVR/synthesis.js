@@ -1,0 +1,28 @@
+{
+  "name": "SimpleSynthesizer",
+  "version": "0.0.0",
+  "description": "",
+  "main": "src/main.js",
+  "author": "",
+  "license": "",
+  "scripts": {
+    "build": "browserify src/main.js | uglifyjs > build/output.js",
+    "start": "browser-sync start --server --files build/** --reload-delay 200",
+    "watch": "parallelshell \"watchify src/main.js -o build/output.js --debug --verbose --delay 50\" \"npm start\"",
+    "test": "mocha --compilers js:babel/register"
+  },
+  "browserify": {
+    "transform": [
+      "babelify"
+    ]
+  },
+  "devDependencies": {
+    "browserify": "*",
+    "watchify": "*", 
+    "babelify": "*",
+    "uglifyjs": "*",
+    "browser-sync": "*",
+    "parallelshell": "*",
+    "mocha": "*"
+  }
+}
