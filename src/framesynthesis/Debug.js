@@ -3,7 +3,14 @@ export default class Debug {
 		document.getElementById("debug").innerHTML = "";
 	}
 	
-	static log(text) {
-		document.getElementById("debug").innerHTML += text + "<br>";
+	static log(message) {
+		let element = document.getElementById("debug");
+		if (element) {
+			element.innerHTML += "<div>" + message + "</div>"; 
+			while (element.scrollHeight > element.clientHeight) {
+				element.removeChild(element.firstChild);
+			}
+		}
 	}
 }
+

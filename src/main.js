@@ -37,15 +37,21 @@ function onMIDIMessage(event) {
 	for (let i = 0; i < event.data.length; i++) {
 		s += "0x" + event.data[i].toString(16) + " ";
 	}
-	console.log(s);
+	
+	let statusByte = event.data[0];
 
-	if (event.data[0] === 0x90) {
-		synthesizer.noteOn(event.data[1]);
+	if (statusByte === 0x90) {
+		let note = event.data[1];
+		let velocity = event.data[2];
+		
+		Debug.log(`timestamp: ${event.timeStamp} Ch 1 Note On  note: ${note} velocity: ${velocity}`);
+		synthesizer.noteOn(note);
 	}
-	if (event.data[0] === 0x80) {
-		synthesizer.noteOff(event.data[1]);
+	if (statusByte === 0x80) {
+		let note = event.data[1];
+		let velocity = event.data[2];
+		
+		Debug.log(`timestamp: ${event.timeStamp} Ch 1 Note Off note: ${note} velocity: ${velocity}`);
+		synthesizer.noteOff(note);
 	}
 }
-
-
-
