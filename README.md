@@ -10,10 +10,6 @@ Chrome 43 or later is required.
 $ npm install  
 $ npm run watch
 
-# License
-
-This project is public domain.
-
 # Author
 
 Katsuomi Kobayashi ([@KatsuomiK](https://twitter.com/KatsuomiK))
