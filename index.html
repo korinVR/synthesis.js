@@ -1,23 +1,36 @@
 <!DOCTYPE html>
 <head>
+	<title>Web MIDI Synthesizer</title>
 	<style>
 		body {
-		    margin: 0;
-		    overflow: hidden;
 		    background-color: #FFF;
+		}
+
+		.container {
+			max-width: 800px;
+			margin: 0 auto;
 		}
 		
 		#debug {
-			margin: 10px;
-			width: calc(100% - 20px);
+			width: 100%;
 			height: 20em;
 			
 			color: #333;
 			background-color: #F8F8F8;
+
+			overflow: hidden;
 		}
 	</style>
 </head>
 <body>
-	<pre id="debug"></pre>
+	<div class="container">
+		<h1>Web MIDI Synthesizer</h1>
+		<p>Web MIDI and Web Audio API simple keyboard. You can play with MIDI keys or PC keys (CVBNM<>?").<br>Chrome 43 or later is required.</p>
+		<ul>
+			<li>GitHub: <a href="https://github.com/KatsuomiK/WebMIDISynthesizer">https://github.com/KatsuomiK/WebMIDISynthesizer</a></li>
+			<li>Author: <a href="https://twitter.com/KatsuomiK">@KatsuomiK</a> / <a href="https://twitter.com/k0rin">@k0rin</a> (in Japanese)
+		</ul>
+		<pre id="debug"></pre>
+	</div>
 </body>
 <script src="build/output.js"></script>

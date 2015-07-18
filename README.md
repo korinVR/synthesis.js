@@ -1,9 +1,8 @@
-# Simple Synthesizer
+# Web MIDI Synthesizer
 
-Web MIDI API and Web Audio API experiment
+Web MIDI API and Web Audio API simple keyboard.
 
-You can play with MIDI keys or PC keys (CVBNM<>?).   
-Chrome 43 or later is required.
+Working demo is at http://framesynthesis.com/experiments/WebMIDISynthesizer/
 
 # Build
 
@@ -12,7 +11,7 @@ $ npm run watch
 
 # Author
 
-Katsuomi Kobayashi ([@KatsuomiK](https://twitter.com/KatsuomiK))
+Katsuomi Kobayashi ([@KatsuomiK](https://twitter.com/KatsuomiK) / [@k0rin](https://twitter.com/k0rin))
 
 http://framesynthesis.com/
 

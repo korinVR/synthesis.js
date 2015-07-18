@@ -3,11 +3,9 @@ import Synthesizer from "./Synthesizer";
 import AudioManager from "./AudioManager";
 import VirtualKeyboard from "./VirtualKeyboard";
 
-Debug.log("Simple Synthesizer");
-Debug.log("Web MIDI API and Web Audio API experiment");
-Debug.log("");
-
+Debug.log("Initializing Synthesizer");
 let synthesizer = new Synthesizer();
+Debug.log("Initializing Web Audio");
 let audioManager = new AudioManager(synthesizer);
 
 let virtualKeyboard = new VirtualKeyboard(synthesizer);
@@ -29,7 +27,7 @@ function onMIDISuccess(midiAccess) {
 }
 
 function onMIDIFailure(message) {
-	Debug.log("Failed to get MIDI access : " + message);
+	Debug.log("MIDI not ready : " + message);
 }
 
 function onMIDIMessage(event) {
