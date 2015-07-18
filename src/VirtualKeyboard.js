@@ -11,7 +11,7 @@ export default class VirtualKeyboard {
 
 		this.key2note = {};
 
-		let note = 72;
+		let note = 60;
 		for (let i = 0; i < keys.length; i++) {
 			this.key2note[keys[i]] = note;
 			note++;

@@ -13,7 +13,7 @@ export default class Voice {
 		this.phase = PHASE_SUSTAIN;
 		this.note = note;
 		this.volume = 1;
-		this.frequency = 440 * Math.pow(2, (note - 81) / 12);
+		this.frequency = 440 * Math.pow(2, (note - 69) / 12);
 		this.pos = 0;
 	}
 	
