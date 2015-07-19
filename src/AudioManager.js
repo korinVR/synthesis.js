@@ -11,16 +11,19 @@ export default class AudioManager {
 			Debug.log("error: This browser does not support Web Audio API.");
 			return;
 		}
-
+		
 		this.buffer = new Float32Array(this.bufferSize);
 		
 		this.scriptProcessor = this.context.createScriptProcessor(this.bufferSize, 0, 2);
 		this.scriptProcessor.onaudioprocess = e => this.process(e);
 		this.scriptProcessor.connect(this.context.destination);
-		
+
 		// Prevent GC
 		// ref. http://stackoverflow.com/questions/24338144/chrome-onaudioprocess-stops-getting-called-after-a-while
 		window.savedReference = this.scriptProcessor;
+		
+		Debug.log("  Sampling rate : " + this.context.sampleRate + " Hz");
+		Debug.log("  Buffer size   : " + this.scriptProcessor.bufferSize + " samples");
 	}
 	
 	process(e) {

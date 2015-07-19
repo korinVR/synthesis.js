@@ -19,13 +19,13 @@ if (navigator.requestMIDIAccess) {
 
 function onMIDISuccess(midiAccess) {
 	for (let input of midiAccess.inputs.values()) {
-		Debug.log(`MIDI port type: ${input.type} id: ${input.id} manufacturer: ${input.manufacturer} name: ${input.name} version: ${input.version}`);
+		Debug.log(`  MIDI Input  id: ${input.id} manufacturer: ${input.manufacturer} name: ${input.name}`);
 
 		input.onmidimessage = onMIDIMessage;
 	}
 
 	for (let output of midiAccess.outputs.values()) {
-		Debug.log(`MIDI port type: ${output.type} id: ${output.id} manufacturer: ${output.manufacturer} name: ${output.name} version: ${output.version}`);
+		Debug.log(`  MIDI Output id: ${output.id} manufacturer: ${output.manufacturer} name: ${output.name}`);
 	}
 	
 	Debug.log("Ready");
