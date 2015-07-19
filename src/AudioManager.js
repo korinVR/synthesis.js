@@ -8,7 +8,8 @@ export default class AudioManager {
 		try {
 			this.context = new AudioContext();
 		} catch (e) {
-			alert("Web Audio API is not supported");
+			Debug.log("error: This browser does not support Web Audio API.");
+			return;
 		}
 
 		this.buffer = new Float32Array(this.bufferSize);

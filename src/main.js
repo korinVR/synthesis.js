@@ -10,10 +10,15 @@ let audioManager = new AudioManager(synthesizer);
 
 let virtualKeyboard = new VirtualKeyboard(synthesizer);
 
-navigator.requestMIDIAccess(/*{ sysex: true }*/).then(onMIDISuccess, onMIDIFailure);
+Debug.log("Initializing Web MIDI");
+if (navigator.requestMIDIAccess) {
+	navigator.requestMIDIAccess(/*{ sysex: true }*/).then(onMIDISuccess, onMIDIFailure);
+} else {
+	Debug.log("error: This browser does not support Web MIDI API.");
+}
 
 function onMIDISuccess(midiAccess) {
-	Debug.log("MIDI ready");
+	Debug.log("ready");
 
 	for (let input of midiAccess.inputs.values()) {
 		Debug.log(`MIDI port type: ${input.type} id: ${input.id} manufacturer: ${input.manufacturer} name: ${input.name} version: ${input.version}`);
