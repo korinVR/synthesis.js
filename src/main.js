@@ -18,8 +18,6 @@ if (navigator.requestMIDIAccess) {
 }
 
 function onMIDISuccess(midiAccess) {
-	Debug.log("ready");
-
 	for (let input of midiAccess.inputs.values()) {
 		Debug.log(`MIDI port type: ${input.type} id: ${input.id} manufacturer: ${input.manufacturer} name: ${input.name} version: ${input.version}`);
 
@@ -29,6 +27,8 @@ function onMIDISuccess(midiAccess) {
 	for (let output of midiAccess.outputs.values()) {
 		Debug.log(`MIDI port type: ${output.type} id: ${output.id} manufacturer: ${output.manufacturer} name: ${output.name} version: ${output.version}`);
 	}
+	
+	Debug.log("Ready");
 }
 
 function onMIDIFailure(message) {
