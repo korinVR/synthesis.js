@@ -1,42 +1,42 @@
-const PHASE_OFF = 0;
-const PHASE_ATTACK = 1; // not used
-const PHASE_DECAY = 2; // not used
-const PHASE_SUSTAIN = 3;
-const PHASE_RELEASE = 4;
+const STATE_OFF = 0;
+const STATE_ATTACK = 1; // not used
+const STATE_DECAY = 2; // not used
+const STATE_SUSTAIN = 3;
+const STATE_RELEASE = 4;
 
 export default class Voice {
 	constructor() {
-		this.phase = PHASE_OFF;
+		this.state = STATE_OFF;
 	}
 	
 	play(note) {
-		this.phase = PHASE_SUSTAIN;
+		this.state = STATE_SUSTAIN;
 		this.note = note;
 		this.volume = 1;
-		this.frequency = 440 * Math.pow(2, (note - 69) / 12);
-		this.pos = 0;
+		this.phase = 0;
 	}
 	
 	stop() {
-		this.phase = PHASE_RELEASE;
+		this.state = STATE_RELEASE;
 	}
 	
-	render(buffer, sampleRate) {
-		if (this.phase !== PHASE_OFF) {
-			let n = this.frequency * 2 * Math.PI / sampleRate;
+	render(buffer, sampleRate, pitchBendOffset) {
+		if (this.state !== STATE_OFF) {
+			let frequency = this.note2frequency(this.note + pitchBendOffset);
+			let period = sampleRate / frequency;
 	
 			for (let i = 0; i < buffer.length; i++) {
-				buffer[i] += Math.sin(n * this.pos) * this.volume * 0.1;
-				this.pos++;
+				buffer[i] += Math.sin(this.phase * (Math.PI * 2)) * this.volume * 0.1;
+				this.phase += 1 / period;
 				
-				if (this.phase === PHASE_RELEASE) {
+				if (this.state === STATE_RELEASE) {
 					this.volume -= 0.005;
 				} else {
 					this.volume *= 0.99999;
 				}
 				
 				if (this.volume < 0) {
-					this.phase = PHASE_OFF;
+					this.state = STATE_OFF;
 					return;
 				}
 			}
@@ -44,10 +44,13 @@ export default class Voice {
 	}
 	
 	isPlaying() {
-		if (this.phase !== PHASE_OFF) {
+		if (this.state !== STATE_OFF) {
 			return true;
 		}
 		return false;
 	}
+	
+	note2frequency(note) {
+		return 440 * Math.pow(2, (note - 69) / 12);
+	}
 }
-

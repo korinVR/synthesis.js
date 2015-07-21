@@ -9,6 +9,8 @@ export default class Synthesizer {
 		for (let i = 0; i < MAX_VOICE; i++) {
 			this.voices[i] = new Voice();
 		}
+		
+		this.pitchBendOffset = 0;
 	}
 	
 	noteOn(note) {
@@ -28,13 +30,17 @@ export default class Synthesizer {
 		}
 	}
 	
+	pitchBend(bend) {
+		this.pitchBendOffset = bend * 2 / 8192;
+	}
+	
 	render(buffer, sampleRate) {
 		for (let i = 0; i < buffer.length; i++) {
 			buffer[i] = 0;
 		}
 		
 		for (let i = 0; i < MAX_VOICE; i++) {
-			this.voices[i].render(buffer, sampleRate);
+			this.voices[i].render(buffer, sampleRate, this.pitchBendOffset);
 		}
 	}
 }

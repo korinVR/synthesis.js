@@ -47,14 +47,22 @@ function onMIDIMessage(event) {
 		let note = event.data[1];
 		let velocity = event.data[2];
 		
-		Debug.log(`timestamp: ${event.timeStamp} Ch 1 Note On  note: ${note} velocity: ${velocity}`);
+		Debug.log(`Ch. 1 Note On  note: ${note} velocity: ${velocity}`);
 		synthesizer.noteOn(note);
 	}
 	if (statusByte === 0x80) {
 		let note = event.data[1];
 		let velocity = event.data[2];
 		
-		Debug.log(`timestamp: ${event.timeStamp} Ch 1 Note Off note: ${note} velocity: ${velocity}`);
+		Debug.log(`Ch. 1 Note Off note: ${note} velocity: ${velocity}`);
 		synthesizer.noteOff(note);
+	}
+	if (statusByte === 0xe0) {
+		let lsb = event.data[1];
+		let msb = event.data[2];
+		let bend = ((msb << 7) | lsb) - 8192;
+		
+		Debug.log(`Ch. 1 Pitch bend: ${bend}`);
+		synthesizer.pitchBend(bend);
 	}
 }
