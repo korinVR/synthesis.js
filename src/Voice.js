@@ -21,18 +21,29 @@ export default class Voice {
 		
 		this.oscillator = new SquareOscillator();
 		// this.oscillator = new TriangleOscillator();
+		
+		this.vibratoOscillator = new TriangleOscillator();
+		this.vibratoPhase = 0;
+		this.vibratoFrequency = 8;
+		this.vibratoAmplitude = 0.5;
 	}
 	
 	stop() {
 		this.state = STATE_RELEASE;
 	}
 	
-	render(buffer, sampleRate, pitchBendOffset) {
+	render(buffer, sampleRate, pitchBendOffset, modulationWheel) {
 		if (this.state !== STATE_OFF) {
-			let frequency = this.note2frequency(this.note + pitchBendOffset);
-			let period = sampleRate / frequency;
-	
 			for (let i = 0; i < buffer.length; i++) {
+				let amplitude = modulationWheel / 127 * this.vibratoAmplitude;
+				
+				let vibratoPeriod = sampleRate / this.vibratoFrequency;
+				this.vibratoPhase += 1 / vibratoPeriod;
+				let vibratoOffset = this.vibratoOscillator.getSample(this.vibratoPhase) * amplitude;
+				
+				let frequency = this.note2frequency(this.note + pitchBendOffset + vibratoOffset);
+				let period = sampleRate / frequency;
+			
 				buffer[i] += this.oscillator.getSample(this.phase) * this.volume * 0.1;
 				this.phase += 1 / period;
 				

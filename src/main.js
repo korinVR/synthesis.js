@@ -63,6 +63,15 @@ function onMIDIMessage(event) {
 		let bend = ((msb << 7) | lsb) - 8192;
 		
 		Debug.log(`Ch. 1 Pitch bend: ${bend}`);
-		synthesizer.pitchBend(bend);
+		synthesizer.setPitchBend(bend);
+	}
+	if (statusByte === 0xb0) {
+		let controlNumber = event.data[1];
+		let value = event.data[2];
+		
+		if (controlNumber === 1) {
+			Debug.log(`Ch. 1 Modulation wheel: ${value}`);
+			synthesizer.setModulationWheel(value);
+		}
 	}
 }

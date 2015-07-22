@@ -11,6 +11,7 @@ export default class Synthesizer {
 		}
 		
 		this.pitchBendOffset = 0;
+		this.modulationWheel = 0;
 	}
 	
 	noteOn(note) {
@@ -30,8 +31,12 @@ export default class Synthesizer {
 		}
 	}
 	
-	pitchBend(bend) {
+	setPitchBend(bend) {
 		this.pitchBendOffset = bend * 2 / 8192;
+	}
+	
+	setModulationWheel(wheel) {
+		this.modulationWheel = wheel;
 	}
 	
 	render(buffer, sampleRate) {
@@ -40,7 +45,7 @@ export default class Synthesizer {
 		}
 		
 		for (let i = 0; i < MAX_VOICE; i++) {
-			this.voices[i].render(buffer, sampleRate, this.pitchBendOffset);
+			this.voices[i].render(buffer, sampleRate, this.pitchBendOffset, this.modulationWheel);
 		}
 	}
 }
