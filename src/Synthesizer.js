@@ -7,10 +7,10 @@ export default class Synthesizer {
 		this.voices = [];
 	
 		for (let i = 0; i < MAX_VOICE; i++) {
-			this.voices[i] = new Voice();
+			this.voices[i] = new Voice(this);
 		}
 		
-		this.pitchBendOffset = 0;
+		this.pitchBend = 0;
 		this.modulationWheel = 0;
 	}
 	
@@ -32,11 +32,11 @@ export default class Synthesizer {
 	}
 	
 	setPitchBend(bend) {
-		this.pitchBendOffset = bend * 2 / 8192;
+		this.pitchBend = bend * 2 / 8192;
 	}
 	
 	setModulationWheel(wheel) {
-		this.modulationWheel = wheel;
+		this.modulationWheel = wheel / 127;
 	}
 	
 	render(buffer, sampleRate) {
@@ -45,7 +45,7 @@ export default class Synthesizer {
 		}
 		
 		for (let i = 0; i < MAX_VOICE; i++) {
-			this.voices[i].render(buffer, sampleRate, this.pitchBendOffset, this.modulationWheel);
+			this.voices[i].render(buffer, sampleRate);
 		}
 	}
 }

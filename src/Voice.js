@@ -8,7 +8,8 @@ const STATE_SUSTAIN = 3;
 const STATE_RELEASE = 4;
 
 export default class Voice {
-	constructor() {
+	constructor(synthesizer) {
+		this.synthesizer = synthesizer;
 		this.state = STATE_OFF; 
 	}
 	
@@ -32,16 +33,16 @@ export default class Voice {
 		this.state = STATE_RELEASE;
 	}
 	
-	render(buffer, sampleRate, pitchBendOffset, modulationWheel) {
+	render(buffer, sampleRate) {
 		if (this.state !== STATE_OFF) {
 			for (let i = 0; i < buffer.length; i++) {
-				let amplitude = modulationWheel / 127 * this.vibratoAmplitude;
+				let amplitude = this.synthesizer.modulationWheel * this.vibratoAmplitude;
 				
 				let vibratoPeriod = sampleRate / this.vibratoFrequency;
 				this.vibratoPhase += 1 / vibratoPeriod;
 				let vibratoOffset = this.vibratoOscillator.getSample(this.vibratoPhase) * amplitude;
 				
-				let frequency = this.note2frequency(this.note + pitchBendOffset + vibratoOffset);
+				let frequency = this.note2frequency(this.note + this.synthesizer.pitchBend + vibratoOffset);
 				let period = sampleRate / frequency;
 			
 				buffer[i] += this.oscillator.getSample(this.phase) * this.volume * 0.1;
