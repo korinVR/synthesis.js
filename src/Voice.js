@@ -21,12 +21,14 @@ export default class Voice {
 		this.phase = 0;
 		
 		this.oscillator = new SquareOscillator();
-		// this.oscillator = new TriangleOscillator();
+		// this.oscillator = new TriangleOscillator(nnhhhhv);
 		
 		this.vibratoOscillator = new TriangleOscillator();
 		this.vibratoPhase = 0;
 		this.vibratoFrequency = 8;
 		this.vibratoAmplitude = 0.5;
+		
+		this.oversampling = 4;
 	}
 	
 	stop() {
@@ -45,8 +47,12 @@ export default class Voice {
 				let frequency = this.note2frequency(this.note + this.synthesizer.pitchBend + vibratoOffset);
 				let period = sampleRate / frequency;
 			
-				buffer[i] += this.oscillator.getSample(this.phase) * this.volume * 0.1;
-				this.phase += 1 / period;
+				let sample = 0;
+				for (let i = 0; i < this.oversampling; i++) {
+					sample += this.oscillator.getSample(this.phase);
+					this.phase += 1 / period / this.oversampling;
+				}
+				buffer[i] += sample / this.oversampling * this.volume * 0.1;
 				
 				if (this.state === STATE_RELEASE) {
 					this.volume -= 0.005;
