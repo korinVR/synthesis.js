@@ -4,7 +4,8 @@ import Voice from "./Voice";
 const MAX_VOICE = 8;
 
 export default class Synthesizer {
-	constructor() {
+	constructor(options) {
+		this.options = options;
 		this.voices = [];
 	
 		for (let i = 0; i < MAX_VOICE; i++) {
@@ -64,14 +65,14 @@ export default class Synthesizer {
 			let note = data[1];
 			let velocity = data[2];
 
-			Debug.log(`Ch. 1 Note On  note: ${note} velocity: ${velocity}`);
+			this.log(`Ch. 1 Note On  note: ${note} velocity: ${velocity}`);
 			this.noteOn(note);
 		}
 		if (statusByte === 0x80) {
 			let note = data[1];
 			let velocity = data[2];
 
-			Debug.log(`Ch. 1 Note Off note: ${note} velocity: ${velocity}`);
+			this.log(`Ch. 1 Note Off note: ${note} velocity: ${velocity}`);
 			this.noteOff(note);
 		}
 		
@@ -84,7 +85,7 @@ export default class Synthesizer {
 			let msb = data[2];
 			let bend = ((msb << 7) | lsb) - 8192;
 
-			Debug.log(`Ch. 1 Pitch bend: ${bend}`);
+			this.log(`Ch. 1 Pitch bend: ${bend}`);
 			this.setPitchBend(bend);
 		}
 		if (statusByte === 0xb0) {
@@ -92,9 +93,15 @@ export default class Synthesizer {
 			let value = data[2];
 
 			if (controlNumber === 1) {
-				Debug.log(`Ch. 1 Modulation wheel: ${value}`);
+				this.log(`Ch. 1 Modulation wheel: ${value}`);
 				this.setModulationWheel(value);
 			}
+		}
+	}
+	
+	log(message) {
+		if (this.options && this.options.verbose) {
+			Debug.log(message);
 		}
 	}
 }

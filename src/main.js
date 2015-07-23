@@ -4,7 +4,7 @@ import AudioManager from "./AudioManager";
 import VirtualKeyboard from "./VirtualKeyboard";
 
 Debug.log("Initializing Synthesizer");
-let synthesizer = new Synthesizer();
+let synthesizer = new Synthesizer({ verbose: true });
 Debug.log("Initializing Web Audio");
 let audioManager = new AudioManager(synthesizer);
 
