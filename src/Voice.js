@@ -21,7 +21,7 @@ export default class Voice {
 		this.phase = 0;
 		
 		this.oscillator = new SquareOscillator();
-		// this.oscillator = new TriangleOscillator(nnhhhhv);
+		// this.oscillator = new TriangleOscillator();
 		
 		this.vibratoOscillator = new TriangleOscillator();
 		this.vibratoPhase = 0;

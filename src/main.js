@@ -32,46 +32,14 @@ function onMIDISuccess(midiAccess) {
 }
 
 function onMIDIFailure(message) {
-	Debug.log("MIDI not ready : " + message);
+	Debug.log("error: Can't initialize Web MIDI: " + message);
 }
 
 function onMIDIMessage(event) {
-	let s = "MIDI message timestamp " + event.timeStamp + " : ";
-	for (let i = 0; i < event.data.length; i++) {
-		s += "0x" + event.data[i].toString(16) + " ";
-	}
+	// let s = "MIDI message timestamp " + event.timeStamp + " : ";
+	// for (let i = 0; i < event.data.length; i++) {
+	// 	s += "0x" + event.data[i].toString(16) + " ";
+	// }
 	
-	let statusByte = event.data[0];
-
-	if (statusByte === 0x90) {
-		let note = event.data[1];
-		let velocity = event.data[2];
-		
-		Debug.log(`Ch. 1 Note On  note: ${note} velocity: ${velocity}`);
-		synthesizer.noteOn(note);
-	}
-	if (statusByte === 0x80) {
-		let note = event.data[1];
-		let velocity = event.data[2];
-		
-		Debug.log(`Ch. 1 Note Off note: ${note} velocity: ${velocity}`);
-		synthesizer.noteOff(note);
-	}
-	if (statusByte === 0xe0) {
-		let lsb = event.data[1];
-		let msb = event.data[2];
-		let bend = ((msb << 7) | lsb) - 8192;
-		
-		Debug.log(`Ch. 1 Pitch bend: ${bend}`);
-		synthesizer.setPitchBend(bend);
-	}
-	if (statusByte === 0xb0) {
-		let controlNumber = event.data[1];
-		let value = event.data[2];
-		
-		if (controlNumber === 1) {
-			Debug.log(`Ch. 1 Modulation wheel: ${value}`);
-			synthesizer.setModulationWheel(value);
-		}
-	}
+	synthesizer.processMIDIMessage(event.data);
 }
