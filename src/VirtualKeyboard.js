@@ -22,34 +22,32 @@ export default class VirtualKeyboard {
 		document.body.addEventListener("keydown", event => this.onKeyDown(event));
 		document.body.addEventListener("keyup", evemt => this.onKeyUp(event));
 		
-		// this.keys = [];
+		this.damperPedal = false;
 	}
 	
 	onKeyDown(event) {
-		// this.keys.push(event.keyCode);
-		// console.log(this.keys);
-		
-		if (event.keyCode === 32) {
-			this.synthesizer.damperPedalOn();
+		if (event.keyCode === 32 && this.damperPedal === false) {
+			this.damperPedal = true;
+			this.synthesizer.processMIDIMessage([0xb0, 64, 127]);
 		}
 		
 		let note = this.key2note[event.keyCode];
 		if (this.keyState[note] === false) {
 			this.keyState[note] = true;
-			this.synthesizer.noteOn(note);
+			this.synthesizer.processMIDIMessage([0x90, note, 96]);
 		}
 	}
 	
 	onKeyUp(event) {
 		if (event.keyCode === 32) {
-			this.synthesizer.damperPedalOff();
+			this.damperPedal = false;
+			this.synthesizer.processMIDIMessage([0xb0, 64, 0]);
 		}
 		
 		let note = this.key2note[event.keyCode];
 		if (this.keyState[note] === true) {
 			this.keyState[note] = false;
-			this.synthesizer.noteOff(note);
+			this.synthesizer.processMIDIMessage([0x80, note, 96]);
 		}
 	}
 }
-
