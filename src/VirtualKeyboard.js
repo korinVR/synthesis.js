@@ -29,6 +29,10 @@ export default class VirtualKeyboard {
 		// this.keys.push(event.keyCode);
 		// console.log(this.keys);
 		
+		if (event.keyCode === 32) {
+			this.synthesizer.damperPedalOn();
+		}
+		
 		let note = this.key2note[event.keyCode];
 		if (this.keyState[note] === false) {
 			this.keyState[note] = true;
@@ -37,6 +41,10 @@ export default class VirtualKeyboard {
 	}
 	
 	onKeyUp(event) {
+		if (event.keyCode === 32) {
+			this.synthesizer.damperPedalOff();
+		}
+		
 		let note = this.key2note[event.keyCode];
 		if (this.keyState[note] === true) {
 			this.keyState[note] = false;

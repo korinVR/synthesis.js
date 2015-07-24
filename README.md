@@ -15,7 +15,8 @@ $ npm run watch
 
 - Ch. 1 Note On/Off (witout velocity)
 - Ch. 1 Pitch Bend
-- Ch. 1 CC1 (Modulation Wheel)
+- Ch. 1 CC 1 (Modulation Wheel)
+- Ch. 1 CC 64 Damper Pedal On/Off
 
 That's all for now :)
 

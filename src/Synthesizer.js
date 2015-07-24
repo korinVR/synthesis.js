@@ -1,22 +1,36 @@
 import Debug from "./framesynthesis/Debug";
 import Voice from "./Voice";
 
-const MAX_VOICE = 8;
+const MAX_VOICE = 32;
 
 export default class Synthesizer {
 	constructor(options) {
 		this.options = options;
+		
 		this.voices = [];
-	
 		for (let i = 0; i < MAX_VOICE; i++) {
 			this.voices[i] = new Voice(this);
 		}
 		
+		this.keyState = [];
+		
+		this.damperPedal = false;
+	
 		this.pitchBend = 0;
 		this.modulationWheel = 0;
 	}
 	
 	noteOn(note) {
+		this.keyState[note] = true;
+
+		// stop same notes
+		for (let i = 0; i < MAX_VOICE; i++) {
+			if (this.voices[i].isPlaying() && this.voices[i].note === note) {
+				this.voices[i].stop();
+			}
+		}
+
+		// play note
 		for (let i = 0; i < MAX_VOICE; i++) {
 			if (!this.voices[i].isPlaying()) {
 				this.voices[i].play(note);
@@ -26,8 +40,29 @@ export default class Synthesizer {
 	}
 	
 	noteOff(note) {
+		this.keyState[note] = false;
+		
+		if (this.damperPedal) {
+			return;
+		}
+
+		// stop notes		
 		for (let i = 0; i < MAX_VOICE; i++) {
-			if (this.voices[i].note === note) {
+			if (this.voices[i].isPlaying() && this.voices[i].note === note) {
+				this.voices[i].stop();
+			}
+		}
+	}
+	
+	damperPedalOn() {
+		this.damperPedal = true;
+	}
+	
+	damperPedalOff() {
+		this.damperPedal = false;
+		
+		for (let i = 0; i < MAX_VOICE; i++) {
+			if (this.keyState[this.voices[i].note] === false) {
 				this.voices[i].stop();
 			}
 		}
@@ -55,7 +90,8 @@ export default class Synthesizer {
 		if (!data) {
 			return;
 		}
-		if (data.length < 2) {
+		
+		if (data.length < 3) {
 			return;
 		}
 		
@@ -76,10 +112,6 @@ export default class Synthesizer {
 			this.noteOff(note);
 		}
 		
-		if (data.length < 3) {
-			return;
-		}
-		
 		if (statusByte === 0xe0) {
 			let lsb = data[1];
 			let msb = data[2];
@@ -95,6 +127,15 @@ export default class Synthesizer {
 			if (controlNumber === 1) {
 				this.log(`Ch. 1 Modulation wheel: ${value}`);
 				this.setModulationWheel(value);
+			}
+			if (controlNumber === 64) {
+				if (value >= 64) {
+					this.log(`Ch. 1 Damper Pedal On`);
+					this.damperPedalOn();
+				} else {
+					this.log(`Ch. 1 Damper Pedal Off`);
+					this.damperPedalOff();
+				}
 			}
 		}
 	}
