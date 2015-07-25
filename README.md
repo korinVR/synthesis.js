@@ -16,7 +16,7 @@ $ npm run watch
 - Ch. 1 Note On/Off
 - Ch. 1 Pitch Bend
 - Ch. 1 CC 1 (Modulation wheel)
-- Ch. 1 CC 64 Damper pedal On/Off
+- Ch. 1 CC 64 (Damper pedal On/Off)
 
 # License
 

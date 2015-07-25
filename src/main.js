@@ -43,3 +43,15 @@ function onMIDIMessage(event) {
 	
 	synthesizer.processMIDIMessage(event.data);
 }
+
+import SMFPlayer from "./SMFPlayer";
+
+let smfPlayer = new SMFPlayer(synthesizer);
+
+function playSMF() {
+	Debug.log("Play test SMF");
+	smfPlayer.play();
+}
+
+// export
+window.playSMF = playSMF; 
