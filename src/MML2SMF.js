@@ -34,6 +34,30 @@ export default class MML2SMF {
 			}
 		}
 		
-		return new Uint8Array(trackData);
+		let trackNum = 1;
+		let resolution = 48;
+		let smfFormat = 0;
+		
+		const smfHeader = [
+			0x4d, 0x54, 0x68, 0x64,
+			0x00, 0x00, 0x00, 0x06,
+			0x00, smfFormat, 
+			(trackNum >> 8) & 0xff,
+			trackNum & 0xff,
+			(resolution >> 8) & 0xff,
+			resolution & 0xff
+		];
+		
+		const trackHeader = [
+			0x4d, 0x54, 0x72, 0x6b,
+			(trackData.length >> 24) & 0xff,
+			(trackData.length >> 16) & 0xff,
+			(trackData.length >> 8) & 0xff,
+			trackData.length & 0xff
+		];
+		
+		let smf = smfHeader.concat(trackHeader, trackData);
+		
+		return new Uint8Array(smf);
 	}
 }

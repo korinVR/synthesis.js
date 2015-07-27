@@ -11,7 +11,8 @@ export default class SMFPlayer {
 	play(smf) {
 		this.trackData = smf;
 		
-		this.pos = 0;
+		// skip swf and truck header (for now)
+		this.pos = 22;
 		
 		this.startTime = Date.now();
 		this.nextEventTime = this.tick2ms(this.readByte());
