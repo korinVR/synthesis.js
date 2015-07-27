@@ -1,12 +1,23 @@
 import Debug from "./framesynthesis/Debug";
+import Platform from "./framesynthesis/Platform";
 import Synthesizer from "./Synthesizer";
 import AudioManager from "./AudioManager";
 import VirtualKeyboard from "./VirtualKeyboard";
 
 Debug.log("Initializing Synthesizer");
 let synthesizer = new Synthesizer({ verbose: true });
-Debug.log("Initializing Web Audio");
-let audioManager = new AudioManager(synthesizer);
+
+let audioManager = null;
+if (!Platform.isiOS()) {
+	initAudioManager();
+}
+
+function initAudioManager() {
+	if (!audioManager) {
+		Debug.log("Initializing Web Audio");
+		audioManager = new AudioManager(synthesizer);
+	}
+}
 
 let virtualKeyboard = new VirtualKeyboard(synthesizer);
 
@@ -50,6 +61,8 @@ import MML2SMF from "./MML2SMF";
 let smfPlayer = new SMFPlayer(synthesizer);
 
 function playSMF() {
+	initAudioManager();
+	
 	Debug.log("Play test SMF");
 	
 	let tick = 24;
@@ -76,6 +89,8 @@ function playSMF() {
 window.playSMF = playSMF; 
 
 function playMML() {
+	initAudioManager();
+	
 	let mml2smf = new MML2SMF();
 	let mml = document.getElementById("mml").value;
 	Debug.log("Convert MML: " + mml);

@@ -6,7 +6,7 @@ export default class AudioManager {
 		this.bufferSize = bufferSize;
 
 		try {
-			this.context = new AudioContext();
+			this.context = new webkitAudioContext() || new AudioContext();
 		} catch (e) {
 			Debug.log("error: This browser does not support Web Audio API.");
 			return;
