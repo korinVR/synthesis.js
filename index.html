@@ -36,7 +36,13 @@
 		<p>Programmed by <a href="https://twitter.com/KatsuomiK">@KatsuomiK</a> / <a href="https://twitter.com/k0rin">@k0rin</a> (in Japanese)</p>
 		<pre id="debug"></pre>
 		
-		<button onclick="playSMF();">Play test SMF</button>
+		<p>
+			<form onsubmit="playMML(); return false;">
+				MML: <input id="mml" type="text" value="ccggaagr ffeeddcr ggffeedr ggffeedr ccggaagr ffeeddcr" size="80" />
+				<button>Play MML</button>
+			</form>
+		</p>
+		<p><button onclick="playSMF();">Play test SMF</button></p>
 		
 		<h2>MIDI Implementation Chart</h2>
 		<dl>

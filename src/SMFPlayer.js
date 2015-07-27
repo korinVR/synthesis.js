@@ -8,16 +8,8 @@ export default class SMFPlayer {
 		this.resolution = 48;
 	}
 	
-	play() {
-		let tick = 24;
-		
-		// test data
-		this.trackData = new Uint8Array([
-			0, 0x90, 60, 96, tick, 0x80, 60, 96,
-			0, 0x90, 62, 96, tick, 0x80, 62, 96,
-			0, 0x90, 64, 96, tick, 0x80, 64, 96,
-			0, 0x90, 65, 96, tick, 0x80, 65, 96,
-			0, 0x90, 67, 96, tick, 0x80, 67, 96]);
+	play(smf) {
+		this.trackData = smf;
 		
 		this.pos = 0;
 		

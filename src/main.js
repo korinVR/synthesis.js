@@ -45,13 +45,36 @@ function onMIDIMessage(event) {
 }
 
 import SMFPlayer from "./SMFPlayer";
+import MML2SMF from "./MML2SMF";
 
 let smfPlayer = new SMFPlayer(synthesizer);
 
 function playSMF() {
 	Debug.log("Play test SMF");
-	smfPlayer.play();
+	
+	let tick = 24;
+
+	// track data only for now
+	let smf = new Uint8Array([
+		0, 0x90, 60, 96, tick, 0x80, 60, 0,
+		0, 0x90, 62, 96, tick, 0x80, 62, 0,
+		0, 0x90, 64, 96, tick, 0x80, 64, 0,
+		0, 0x90, 65, 96, tick, 0x80, 65, 0,
+		0, 0x90, 67, 96, tick, 0x80, 67, 0]);
+	
+	smfPlayer.play(smf);
 }
 
 // export
 window.playSMF = playSMF; 
+
+function playMML() {
+	let mml2smf = new MML2SMF();
+	let mml = document.getElementById("mml").value;
+	Debug.log("Convert MML: " + mml);
+	let smf = mml2smf.convert(mml);
+	Debug.log("Play SMF");
+	smfPlayer.play(smf);
+}
+
+window.playMML = playMML;
