@@ -26,6 +26,10 @@ export default class VirtualKeyboard {
 	}
 	
 	onKeyDown(event) {
+		if (event.target.nodeName == "INPUT") {
+			return;
+		}
+		
 		if (event.keyCode === 32 && this.damperPedal === false) {
 			this.damperPedal = true;
 			this.synthesizer.processMIDIMessage([0xb0, 64, 127]);
