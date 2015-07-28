@@ -85,8 +85,16 @@ function playSMF() {
 	smfPlayer.play(smf);
 }
 
+function stopSMF() {
+	Debug.log("Stop SMF");
+	
+	smfPlayer.stop();
+	synthesizer.processMIDIMessage([0xb0, 123, 0]);
+}
+
 // export
 window.playSMF = playSMF; 
+window.stopSMF = stopSMF;
 
 function playMML() {
 	initAudioManager();

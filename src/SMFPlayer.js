@@ -22,6 +22,11 @@ export default class SMFPlayer {
 		}
 	}
 	
+	stop() {
+		clearInterval(this.intervalId);
+		this.intervalId = null;
+	}
+	
 	onInterval() {
 		let currentTime = Date.now() - this.startTime;
 		
@@ -35,8 +40,7 @@ export default class SMFPlayer {
 			
 			if (this.pos >= this.trackData.length) {
 				// end of track data
-				clearInterval(this.intervalId);
-				this.intervalId = null;
+				this.stop();
 				break;
 			}
 			

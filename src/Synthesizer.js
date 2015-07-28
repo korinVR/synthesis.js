@@ -54,6 +54,14 @@ export default class Synthesizer {
 		}
 	}
 	
+	allNotesOff() {
+		for (let i = 0; i < MAX_VOICE; i++) {
+			if (this.voices[i].isPlaying()) {
+				this.voices[i].stop();
+			}
+		}
+	}
+	
 	damperPedalOn() {
 		this.damperPedal = true;
 	}
@@ -135,6 +143,12 @@ export default class Synthesizer {
 				} else {
 					this.log(`Ch. 1 Damper Pedal Off`);
 					this.damperPedalOff();
+				}
+			}
+			if (controlNumber === 123) {
+				if (value === 0) {
+					this.log(`Ch. 1 All Notes Off`);
+					this.allNotesOff();
 				}
 			}
 		}
