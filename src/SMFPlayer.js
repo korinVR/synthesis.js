@@ -23,10 +23,9 @@ export default class SMFPlayer {
 	}
 	
 	onInterval() {
-		let currentTime = Date.now();
-		let elapsedTime = currentTime - this.startTime;
+		let currentTime = Date.now() - this.startTime;
 		
-		while (elapsedTime > this.nextEventTime) {
+		while (this.nextEventTime < currentTime) {
 			// send MIDI message
 			let statusByte = this.readByte();
 			let dataByte1 = this.readByte();
