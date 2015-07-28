@@ -4,7 +4,6 @@ import Synthesizer from "./Synthesizer";
 import AudioManager from "./AudioManager";
 import VirtualKeyboard from "./VirtualKeyboard";
 
-Debug.log("Initializing Synthesizer");
 let synthesizer = new Synthesizer({ verbose: true });
 
 let audioManager = null;
@@ -108,3 +107,9 @@ function playMML() {
 }
 
 window.playMML = playMML;
+
+function synthesizerReset() {
+	synthesizer.reset();
+}
+
+window.synthesizerReset = synthesizerReset;

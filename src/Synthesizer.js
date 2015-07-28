@@ -7,6 +7,12 @@ export default class Synthesizer {
 	constructor(options) {
 		this.options = options;
 		
+		this.reset();
+	}
+	
+	reset() {
+		Debug.log("Initializing Synthesizer");
+
 		this.voices = [];
 		for (let i = 0; i < MAX_VOICE; i++) {
 			this.voices[i] = new Voice(this);
