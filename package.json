@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "build": "browserify src/main.js | uglifyjs > build/output.js",
-    "start": "browser-sync start --server --files \"index.html, build/**\" --reload-delay 200",
+    "start": "browser-sync start --server --no-ghost-mode --files \"index.html, build/**\" --reload-delay 200",
     "watch": "parallelshell \"watchify src/main.js -o build/output.js --debug --verbose --delay 50\" \"npm start\"",
     "test": "mocha --compilers js:babel/register"
   },

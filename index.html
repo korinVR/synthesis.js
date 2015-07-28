@@ -55,6 +55,16 @@
 		#mml2smf {
 			background-color: #DDD;
 		}
+		
+		#virtual-keyboard {
+			background-color: #EEE;
+		}
+		
+		#keyboard {
+			width: 100%;
+			height: 120px;
+			overflow: hidden;
+		}
 	</style>
 </head>
 <body>
@@ -72,6 +82,12 @@
 		</div>
 		
 		<pre id="debug"></pre>
+		
+		<div class="rack" id="virtual-keyboard">
+			<h2>Keyboard (N/A)</h2>
+			<div id="keyboard">
+			</div>
+		</div>
 		
 		<div class="rack" id="mml2smf">
 			<h2>MML2SMF</h2>
