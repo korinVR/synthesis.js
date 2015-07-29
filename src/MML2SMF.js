@@ -7,6 +7,8 @@ export default class MML2SMF {
 		
 		let restTick = 0;
 		
+		let octave = 4;
+		
 		for (let i = 0; i < mml.length; i++) {
 			let command = mml.charAt(i);
 			
@@ -20,7 +22,7 @@ export default class MML2SMF {
 				case "b":
 					let n = mml.charCodeAt(i) - "a".charCodeAt(0);
 					if (n >= 0 && n < abcdefg.length) {
-						let note = 60 + abcdefg[n];
+						let note = (octave + 1) * 12 + abcdefg[n];
 						let velocity = 96;
 
 						trackData.push(restTick, 0x90, note, velocity, tick, 0x80, note, 0);
@@ -30,6 +32,30 @@ export default class MML2SMF {
 					
 				case "r":
 					restTick += tick;
+					break;
+				
+				case "o":
+					{
+						let n = parseInt(mml.substr(i + 1, 3));
+						if (-1 <= n || n <= 10) {
+							octave = n;
+							i += String(n).length;
+							break;
+						}
+					}
+					throw new Error(`pos ${i} : no octave number`);
+					return;
+				
+				case "<":
+					if (octave < 10) {
+						octave++;
+					}
+					break;
+				
+				case ">":
+					if (octave > -1) {
+						octave--;
+					}
 					break;
 			}
 		}

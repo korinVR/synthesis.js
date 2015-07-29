@@ -101,9 +101,13 @@ function playMML() {
 	let mml2smf = new MML2SMF();
 	let mml = document.getElementById("mml").value;
 	Debug.log("Convert MML: " + mml);
-	let smf = mml2smf.convert(mml);
-	Debug.log("Play SMF");
-	smfPlayer.play(smf);
+	try {
+		let smf = mml2smf.convert(mml);
+		Debug.log("Play SMF");
+		smfPlayer.play(smf);
+	} catch (e) {
+		Debug.log(e.message);
+	}
 }
 
 window.playMML = playMML;
