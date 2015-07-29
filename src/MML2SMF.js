@@ -7,6 +7,8 @@ export default class MML2SMF {
 		
 		let restTick = 0;
 		
+		const OCTAVE_MIN = -1;
+		const OCTAVE_MAX = 10;
 		let octave = 4;
 		
 		for (let i = 0; i < mml.length; i++) {
@@ -37,7 +39,7 @@ export default class MML2SMF {
 				case "o":
 					{
 						let n = parseInt(mml.substr(i + 1, 3));
-						if (-1 <= n || n <= 10) {
+						if (OCTAVE_MIN <= n || n <= OCTAVE_MAX) {
 							octave = n;
 							i += String(n).length;
 							break;
@@ -47,13 +49,13 @@ export default class MML2SMF {
 					return;
 				
 				case "<":
-					if (octave < 10) {
+					if (octave < OCTAVE_MAX) {
 						octave++;
 					}
 					break;
 				
 				case ">":
-					if (octave > -1) {
+					if (octave > OCTAVE_MIN) {
 						octave--;
 					}
 					break;
