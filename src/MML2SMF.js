@@ -23,13 +23,22 @@ export default class MML2SMF {
 				case "a":
 				case "b":
 					let n = mml.charCodeAt(i) - "a".charCodeAt(0);
-					if (n >= 0 && n < abcdefg.length) {
-						let note = (octave + 1) * 12 + abcdefg[n];
-						let velocity = 96;
-
-						trackData.push(restTick, 0x90, note, velocity, tick, 0x80, note, 0);
-						restTick = 0;
+					if (n < 0 || n >= abcdefg.length) {
+						break;
 					}
+					let note = (octave + 1) * 12 + abcdefg[n];
+					if (mml.charAt(i + 1) === "+") {
+						note++;
+						i++;
+					} else if (mml.charAt(i + 1) === "-") {
+						note--;
+						i++;
+					}
+					
+					let velocity = 96;
+
+					trackData.push(restTick, 0x90, note, velocity, tick, 0x80, note, 0);
+					restTick = 0;
 					break;
 					
 				case "r":
