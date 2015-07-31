@@ -1,93 +1,26 @@
 import Debug from "./framesynthesis/Debug";
-import Voice from "./Voice";
+import Channel from "./Channel";
 
-const MAX_VOICE = 32;
+const CHANNEL_MAX = 16;
 
 export default class Synthesizer {
 	constructor(options) {
 		this.options = options;
+		
+		this.channels = [];
+		for (let i = 0; i < CHANNEL_MAX; i++) {
+			this.channels[i] = new Channel();
+		}
 		
 		this.reset();
 	}
 	
 	reset() {
 		Debug.log("Initializing Synthesizer");
-
-		this.voices = [];
-		for (let i = 0; i < MAX_VOICE; i++) {
-			this.voices[i] = new Voice(this);
-		}
 		
-		this.keyState = [];
-		
-		this.damperPedal = false;
-	
-		this.pitchBend = 0;
-		this.modulationWheel = 0;
-	}
-	
-	noteOn(note) {
-		this.keyState[note] = true;
-
-		// stop same notes
-		for (let i = 0; i < MAX_VOICE; i++) {
-			if (this.voices[i].isPlaying() && this.voices[i].note === note) {
-				this.voices[i].stop();
-			}
+		for (let i = 0; i < CHANNEL_MAX; i++) {
+			this.channels[i].reset();
 		}
-
-		// play note
-		for (let i = 0; i < MAX_VOICE; i++) {
-			if (!this.voices[i].isPlaying()) {
-				this.voices[i].play(note);
-				break;
-			}
-		}
-	}
-	
-	noteOff(note) {
-		this.keyState[note] = false;
-		
-		if (this.damperPedal) {
-			return;
-		}
-
-		// stop notes		
-		for (let i = 0; i < MAX_VOICE; i++) {
-			if (this.voices[i].isPlaying() && this.voices[i].note === note) {
-				this.voices[i].stop();
-			}
-		}
-	}
-	
-	allNotesOff() {
-		for (let i = 0; i < MAX_VOICE; i++) {
-			if (this.voices[i].isPlaying()) {
-				this.voices[i].stop();
-			}
-		}
-	}
-	
-	damperPedalOn() {
-		this.damperPedal = true;
-	}
-	
-	damperPedalOff() {
-		this.damperPedal = false;
-		
-		for (let i = 0; i < MAX_VOICE; i++) {
-			if (this.keyState[this.voices[i].note] === false) {
-				this.voices[i].stop();
-			}
-		}
-	}
-	
-	setPitchBend(bend) {
-		this.pitchBend = bend * 2 / 8192;
-	}
-	
-	setModulationWheel(wheel) {
-		this.modulationWheel = wheel / 127;
 	}
 	
 	render(buffer, sampleRate) {
@@ -95,8 +28,8 @@ export default class Synthesizer {
 			buffer[i] = 0;
 		}
 		
-		for (let i = 0; i < MAX_VOICE; i++) {
-			this.voices[i].render(buffer, sampleRate);
+		for (let i = 0; i < CHANNEL_MAX; i++) {
+			this.channels[i].render(buffer, sampleRate);
 		}
 	}
 	
@@ -110,51 +43,54 @@ export default class Synthesizer {
 		}
 		
 		let statusByte = data[0];
+		let statusUpper4bits = statusByte >> 4;
+		let channel = statusByte & 0xf;
+		let midiChannel = channel + 1;
 
-		if (statusByte === 0x90) {
+		if (statusUpper4bits === 0x9) {
 			let note = data[1];
 			let velocity = data[2];
 
-			this.log(`Ch. 1 Note On  note: ${note} velocity: ${velocity}`);
-			this.noteOn(note);
+			this.log(`Ch. ${midiChannel} Note On  note: ${note} velocity: ${velocity}`);
+			this.channels[channel].noteOn(note);
 		}
-		if (statusByte === 0x80) {
+		if (statusUpper4bits === 0x8) {
 			let note = data[1];
 			let velocity = data[2];
 
-			this.log(`Ch. 1 Note Off note: ${note} velocity: ${velocity}`);
-			this.noteOff(note);
+			this.log(`Ch. ${midiChannel} Note Off note: ${note} velocity: ${velocity}`);
+			this.channels[channel].noteOff(note);
 		}
 		
-		if (statusByte === 0xe0) {
+		if (statusUpper4bits === 0xe) {
 			let lsb = data[1];
 			let msb = data[2];
 			let bend = ((msb << 7) | lsb) - 8192;
 
-			this.log(`Ch. 1 Pitch bend: ${bend}`);
-			this.setPitchBend(bend);
+			this.log(`Ch. ${midiChannel} Pitch bend: ${bend}`);
+			this.channels[channel].setPitchBend(bend);
 		}
-		if (statusByte === 0xb0) {
+		if (statusUpper4bits === 0xb) {
 			let controlNumber = data[1];
 			let value = data[2];
 
 			if (controlNumber === 1) {
-				this.log(`Ch. 1 Modulation wheel: ${value}`);
-				this.setModulationWheel(value);
+				this.log(`Ch. ${midiChannel} Modulation wheel: ${value}`);
+				this.channels[channel].setModulationWheel(value);
 			}
 			if (controlNumber === 64) {
 				if (value >= 64) {
-					this.log(`Ch. 1 Damper Pedal On`);
-					this.damperPedalOn();
+					this.log(`Ch. ${midiChannel} Damper Pedal On`);
+					this.channels[channel].damperPedalOn();
 				} else {
-					this.log(`Ch. 1 Damper Pedal Off`);
-					this.damperPedalOff();
+					this.log(`Ch. ${midiChannel} Damper Pedal Off`);
+					this.channels[channel].damperPedalOff();
 				}
 			}
 			if (controlNumber === 123) {
 				if (value === 0) {
-					this.log(`Ch. 1 All Notes Off`);
-					this.allNotesOff();
+					this.log(`Ch. ${midiChannel} All Notes Off`);
+					this.channels[channel].allNotesOff();
 				}
 			}
 		}

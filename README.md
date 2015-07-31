@@ -11,13 +11,13 @@ $ npm run watch
 
 # MIDI Implementation Chart
 
-## MIDI Input
+## MIDI Input (Ch. 1-16)
 
-- Ch. 1 Note On/Off
-- Ch. 1 Pitch Bend
-- Ch. 1 CC 1 (Modulation wheel)
-- Ch. 1 CC 64 (Damper pedal On/Off)
-- Ch. 1 CC 123 (All Notes Off)
+- Note On/Off
+- Pitch Bend
+- CC 1 (Modulation wheel)
+- CC 64 (Damper pedal On/Off)
+- CC 123 (All notes off)
 
 # License
 

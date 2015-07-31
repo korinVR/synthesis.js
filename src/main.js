@@ -75,11 +75,11 @@ function playSMF() {
 		0x4d, 0x54, 0x72, 0x6b,
 		0x00, 0x00, 0x00, 0x28,
 		
-		0, 0x90, 60, 96, tick, 0x80, 60, 0,
-		0, 0x90, 62, 96, tick, 0x80, 62, 0,
-		0, 0x90, 64, 96, tick, 0x80, 64, 0,
-		0, 0x90, 65, 96, tick, 0x80, 65, 0,
-		0, 0x90, 67, 96, tick, 0x80, 67, 0]);
+		0, 0x9F, 60, 96, tick, 0x8F, 60, 0,
+		0, 0x9F, 62, 96, tick, 0x8F, 62, 0,
+		0, 0x9F, 64, 96, tick, 0x8F, 64, 0,
+		0, 0x9F, 65, 96, tick, 0x8F, 65, 0,
+		0, 0x9F, 67, 96, tick, 0x8F, 67, 0]);
 	
 	smfPlayer.play(smf);
 }
@@ -88,7 +88,10 @@ function stopSMF() {
 	Debug.log("Stop SMF");
 	
 	smfPlayer.stop();
-	synthesizer.processMIDIMessage([0xb0, 123, 0]);
+	
+	for (let i = 0; i < 16; i++) {
+		synthesizer.processMIDIMessage([0xb0 + i, 123, 0]);
+	}
 }
 
 // export
