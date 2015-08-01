@@ -110,14 +110,14 @@ export default class SMFPlayer {
 			
 		this.currentTick += deltaTime / tickTime;
 		
-		for (let i = 0; i < this.trackNumber; i++) {
-			this.tracks[i].update(this.currentTick);
+		for (let track of this.tracks) {
+			track.update(this.currentTick);
 		}
 		
 		// stop when all tracks finish
 		let playingTrack = 0;
-		for (let i = 0; i < this.trackNumber; i++){
-			if (this.tracks[i].finished === false) {
+		for (let track of this.tracks) {
+			if (track.finished === false) {
 				playingTrack++;
 			}
 		}
