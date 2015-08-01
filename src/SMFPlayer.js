@@ -9,10 +9,21 @@ export default class SMFPlayer {
 	}
 	
 	play(smf) {
-		this.trackData = smf;
+		this.smf = smf;
 		
-		// skip swf and truck header (for now)
-		this.pos = 22;
+		// read SMF header
+		this.pos = 8;
+		
+		let format = this.read2bytes();
+		let trackNumber = this.read2bytes();
+		let resolution = this.read2bytes();
+		
+		if (format === 0 && trackNumber !== 1) {
+			throw new Error("illegal track number");
+		}
+		
+		this.trackDataLength = this.read4bytes();
+		this.trackEndPos = this.trackStartPos + this.trackDataLength;
 		
 		this.startTime = Date.now();
 		this.nextEventTime = this.tick2ms(this.readByte());
@@ -38,7 +49,7 @@ export default class SMFPlayer {
 			
 			this.synthesizer.processMIDIMessage([statusByte, dataByte1, dataByte2]);
 			
-			if (this.pos >= this.trackData.length) {
+			if (this.trackPos >= this.trackEndPos) {
 				// end of track data
 				this.stop();
 				break;
@@ -51,7 +62,25 @@ export default class SMFPlayer {
 	}
 	
 	readByte() {
-		return this.trackData[this.pos++];
+		return this.smf[this.pos++];
+	}
+	
+	read2bytes() {
+		let length =
+			this.smf[this.pos++] << 8 |
+			this.smf[this.pos++]
+		
+		return length;
+	}
+	
+	read4bytes() {
+		let length =
+			this.smf[this.pos++] << 24 |
+			this.smf[this.pos++] << 16 |
+			this.smf[this.pos++] << 8 |
+			this.smf[this.pos++];
+		
+		return length;
 	}
 	
 	tick2ms(tick) {
