@@ -69,6 +69,14 @@ export default class SMFPlayer {
 		this.trackNumber = read2bytes();
 		this.resolution = read2bytes();
 		
+		// error check
+		const SMF_HEADER = [0x4d, 0x54, 0x68, 0x64, 0x00, 0x00, 0x00, 0x06];
+		for (let i = 0; i < SMF_HEADER.length; i++) {
+			if (this.smf[i] != SMF_HEADER[i]) {
+				throw new Error("not a standard MIDI file");
+			}
+		}
+		
 		if (format === 0 && this.trackNumber !== 1) {
 			throw new Error("illegal track number");
 		}
