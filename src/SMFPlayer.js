@@ -77,6 +77,10 @@ export default class SMFPlayer {
 			}
 		}
 		
+		if (format !== 0 && format !== 1) {
+			throw new Error("wrong SMF format");
+		}
+		
 		if (format === 0 && this.trackNumber !== 1) {
 			throw new Error("illegal track number");
 		}
