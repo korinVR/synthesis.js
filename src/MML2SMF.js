@@ -34,17 +34,17 @@ export default class MML2SMF {
 						note--;
 						i++;
 					}
-					
+
 					let velocity = 96;
 
 					trackData.push(restTick, 0x90, note, velocity, tick, 0x80, note, 0);
 					restTick = 0;
 					break;
-					
+
 				case "r":
 					restTick += tick;
 					break;
-				
+
 				case "o":
 					{
 						let n = parseInt(mml.substr(i + 1, 3));
@@ -56,16 +56,34 @@ export default class MML2SMF {
 					}
 					throw new Error(`pos ${i} : no octave number`);
 					return;
-				
+
 				case "<":
 					if (octave < OCTAVE_MAX) {
 						octave++;
 					}
 					break;
-				
+
 				case ">":
 					if (octave > OCTAVE_MIN) {
 						octave--;
+					}
+					break;
+
+				case "t":
+					{
+						let tempo = parseInt(mml.substr(i + 1, 8));
+						let quarterMicroseconds = 60 * 1000 * 1000 / tempo;
+						
+						if (quarterMicroseconds < 1 || quarterMicroseconds > 0xffffff) {
+							throw new Error(`pos ${i} : illegal tempo`);
+						}
+
+						trackData.push(restTick, 0xff, 0x51, 0x03,
+							(quarterMicroseconds >> 16) & 0xff,
+							(quarterMicroseconds >> 8) & 0xff,
+							(quarterMicroseconds) & 0xff);
+
+						i += String(tempo).length;
 					}
 					break;
 			}

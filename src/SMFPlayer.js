@@ -19,10 +19,28 @@ class Track {
 		while (this.nextEventTick < currentTick) {
 			// send MIDI message
 			let statusByte = this.readByte();
-			let dataByte1 = this.readByte();
-			let dataByte2 = this.readByte();
+			
+			if (statusByte === 0xff) {
+				// meta event
+				
+				let metaEventType = this.readByte();
+				let length = this.readByte();
 
-			this.player.synthesizer.processMIDIMessage([statusByte, dataByte1, dataByte2]);
+				if (metaEventType === 0x51) {
+					if (length === 3) {
+						let quarterMicroseconds = this.readByte() << 16 | this.readByte() << 8 | this.readByte();
+						this.player.quarterTime = quarterMicroseconds / 1000;
+					}
+				} else {
+					this.pos += length;
+				}
+			} else {
+				// MIDI event
+				let dataByte1 = this.readByte();
+				let dataByte2 = this.readByte();
+
+				this.player.synthesizer.processMIDIMessage([statusByte, dataByte1, dataByte2]);
+			}
 
 			if (this.pos >= this.endPos) {
 				// end of track data
@@ -48,7 +66,8 @@ export default class SMFPlayer {
 	constructor(synthesizer) {
 		this.synthesizer = synthesizer;
 		
-		this.tempo = 120;
+		const TEMPO_DEFAULT = 120;
+		this.quarterTime = 60 * 1000 / TEMPO_DEFAULT; // ms
 	}
 	
 	play(smf) {
@@ -117,8 +136,7 @@ export default class SMFPlayer {
 		let deltaTime = currentTime - this.prevTime;
 		this.prevTime = currentTime; 
 		
-		let quarterTime = 60 * 1000 / this.tempo;
-		let tickTime = quarterTime / this.resolution;
+		let tickTime = this.quarterTime / this.resolution;
 			
 		this.currentTick += deltaTime / tickTime;
 		
