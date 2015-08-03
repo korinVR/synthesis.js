@@ -1,5 +1,39 @@
 export default class MML2SMF {
 	convert(mml) {
+		let trackMMLs = mml.split(";");
+		
+		let trackNum = trackMMLs.length;
+		let resolution = 48;
+		let smfFormat = (trackNum == 1) ? 0 : 1;
+		
+		let smf = [
+			0x4d, 0x54, 0x68, 0x64,
+			0x00, 0x00, 0x00, 0x06,
+			0x00, smfFormat, 
+			(trackNum >> 8) & 0xff,
+			trackNum & 0xff,
+			(resolution >> 8) & 0xff,
+			resolution & 0xff
+		];
+		
+		for (let trackMML of trackMMLs) {
+			let trackData = this.createTrackData(trackMML);
+
+			const trackHeader = [
+				0x4d, 0x54, 0x72, 0x6b,
+				(trackData.length >> 24) & 0xff,
+				(trackData.length >> 16) & 0xff,
+				(trackData.length >> 8) & 0xff,
+				trackData.length & 0xff
+			];
+
+			smf = smf.concat(trackHeader, trackData);
+		}
+		
+		return new Uint8Array(smf);
+	}
+	
+	createTrackData(mml) {
 		const abcdefg = [9, 11, 0, 2, 4, 5, 7];
 		
 		let trackData = [];
@@ -89,30 +123,6 @@ export default class MML2SMF {
 			}
 		}
 		
-		let trackNum = 1;
-		let resolution = 48;
-		let smfFormat = 0;
-		
-		const smfHeader = [
-			0x4d, 0x54, 0x68, 0x64,
-			0x00, 0x00, 0x00, 0x06,
-			0x00, smfFormat, 
-			(trackNum >> 8) & 0xff,
-			trackNum & 0xff,
-			(resolution >> 8) & 0xff,
-			resolution & 0xff
-		];
-		
-		const trackHeader = [
-			0x4d, 0x54, 0x72, 0x6b,
-			(trackData.length >> 24) & 0xff,
-			(trackData.length >> 16) & 0xff,
-			(trackData.length >> 8) & 0xff,
-			trackData.length & 0xff
-		];
-		
-		let smf = smfHeader.concat(trackHeader, trackData);
-		
-		return new Uint8Array(smf);
+		return trackData;
 	}
 }
