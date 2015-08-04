@@ -1,3 +1,4 @@
+const TEMPO_DEFAULT = 120;
 const INTERVAL = 1 / 60;
 
 class Track {
@@ -65,13 +66,12 @@ class Track {
 export default class SMFPlayer {
 	constructor(synthesizer) {
 		this.synthesizer = synthesizer;
-		
-		const TEMPO_DEFAULT = 120;
-		this.quarterTime = 60 * 1000 / TEMPO_DEFAULT; // ms
 	}
 	
 	play(smf) {
 		this.smf = smf;
+		
+		this.quarterTime = 60 * 1000 / TEMPO_DEFAULT; // ms
 		
 		// read SMF header
 		let pos = 8;
