@@ -117,10 +117,25 @@ function playMML() {
 	}
 }
 
+function tweetMML() {
+	let mml = document.getElementById("mml").value;
+	let mmlURL = "http://framesynthesis.com/experiments/synthesis.js/?mml=" + encodeURIComponent(mml);
+	
+	let url = "https://twitter.com/intent/tweet?hashtags=synthesisjs&text=" + encodeURIComponent(mmlURL);
+	window.open(url, "_blank");
+}
+
 window.playMML = playMML;
+window.tweetMML = tweetMML;
 
 function synthesizerReset() {
 	synthesizer.reset();
 }
 
 window.synthesizerReset = synthesizerReset;
+
+// set MML from query string
+if (location.search.indexOf("?mml=") === 0) {
+	let mml = decodeURIComponent(location.search.substring(5));
+	document.getElementById("mml").value = mml;
+}
