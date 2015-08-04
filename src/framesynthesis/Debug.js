@@ -6,11 +6,14 @@ export default class Debug {
 	static log(message) {
 		let element = document.getElementById("debug");
 		if (element) {
-			element.innerHTML += "<div>" + message + "</div>"; 
+			let div = document.createElement("div");
+			let text = document.createTextNode(message);
+			div.appendChild(text);
+			
+			element.appendChild(div);
 			while (element.scrollHeight > element.clientHeight) {
 				element.removeChild(element.firstChild);
 			}
 		}
 	}
 }
-
