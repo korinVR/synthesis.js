@@ -59,7 +59,19 @@ class Track {
 	}
 	
 	readDeltaTick() {
-		return this.readByte();
+		let tick = 0;
+		
+		do {
+			let n = this.readByte();
+			tick <<= 7;
+			tick |= n & 0x7f;
+		} while (tick & 0x80);
+		
+		if (tick > 0xfffffff) {
+			throw new Error("illegal delta tick");
+		}
+		
+		return tick;
 	}
 }
 

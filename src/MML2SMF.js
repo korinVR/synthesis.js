@@ -73,6 +73,28 @@ export default class MML2SMF {
 			throw new Error(`char ${p} : ${message}`);
 		}
 		
+		function writeDeltaTick(tick) {
+			if (tick < 0 || tick > 0xfffffff) {
+				error("illegal length");
+			}
+			
+			let stack = [];
+			
+			do {
+				stack.push(tick & 0x7f);
+				tick >>>= 7;
+			} while (tick > 0);
+			
+			while (stack.length > 0) {
+				let b = stack.pop();
+				
+				if (stack.length > 0) {
+					b |= 0x80;
+				}
+				trackData.push(b);
+			}
+		}
+		
 		while (p < mml.length) {
 			if (!isNextChar("cdefgabro<>t ")) {
 				error(`syntax error '${readChar()}'`);
@@ -104,8 +126,11 @@ export default class MML2SMF {
 					}
 
 					let velocity = 96;
-
-					trackData.push(restTick, 0x90, note, velocity, tick, 0x80, note, 0);
+					
+					writeDeltaTick(restTick);
+					trackData.push(0x90, note, velocity);
+					writeDeltaTick(tick);
+					trackData.push(0x80, note, 0);
 					restTick = 0;
 					break;
 
@@ -149,7 +174,8 @@ export default class MML2SMF {
 							error("illegal tempo");
 						}
 
-						trackData.push(restTick, 0xff, 0x51, 0x03,
+						writeDeltaTick(restTick);
+						trackData.push(0xff, 0x51, 0x03,
 							(quarterMicroseconds >> 16) & 0xff,
 							(quarterMicroseconds >> 8) & 0xff,
 							(quarterMicroseconds) & 0xff);
