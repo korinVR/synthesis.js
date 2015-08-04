@@ -19,6 +19,7 @@
   "devDependencies": {
     "browserify": "*",
     "watchify": "*", 
+    "babel": "*",
     "babelify": "*",
     "uglifyjs": "*",
     "browser-sync": "*",

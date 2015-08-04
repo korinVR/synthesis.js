@@ -1,3 +1,5 @@
+import "babel/polyfill";
+
 import Debug from "./framesynthesis/Debug";
 import Platform from "./framesynthesis/Platform";
 import Synthesizer from "./Synthesizer";
