@@ -45,8 +45,39 @@ export default class MML2SMF {
 		const OCTAVE_MAX = 10;
 		let octave = 4;
 		
-		for (let i = 0; i < mml.length; i++) {
-			let command = mml.charAt(i);
+		let p = 0;
+		
+		function readChar() {
+			return mml.charAt(p++);
+		}
+		
+		function isNextChar(candidates) {
+			let c = mml.charAt(p);
+			if (candidates.indexOf(c) >= 0) {
+				return true;
+			}
+			return false;
+		}
+		
+		function readValue() {
+			let value = parseInt(mml.substr(p, 10));
+			p += String(value).length;
+			return value;
+		}
+		
+		function isNextValue() {
+			return isNextChar("0123456789.-");
+		}
+		
+		function error(message) {
+			throw new Error(`char ${p} : ${message}`);
+		}
+		
+		while (p < mml.length) {
+			if (!isNextChar("cdefgabro<>t ")) {
+				error(`syntax error '${readChar()}'`);
+			}
+			let command = readChar();
 			
 			switch (command) {
 				case "c":
@@ -56,17 +87,20 @@ export default class MML2SMF {
 				case "g":
 				case "a":
 				case "b":
-					let n = mml.charCodeAt(i) - "a".charCodeAt(0);
+					let n = "abcdefg".indexOf(command);
 					if (n < 0 || n >= abcdefg.length) {
 						break;
 					}
 					let note = (octave + 1) * 12 + abcdefg[n];
-					if (mml.charAt(i + 1) === "+") {
-						note++;
-						i++;
-					} else if (mml.charAt(i + 1) === "-") {
-						note--;
-						i++;
+					
+					if (isNextChar("+-")) {
+						let c = readChar();
+						if (c === "+") {
+							note++;
+						}
+						if (c === "-") {
+							note--;
+						}
 					}
 
 					let velocity = 96;
@@ -80,16 +114,16 @@ export default class MML2SMF {
 					break;
 
 				case "o":
-					{
-						let n = parseInt(mml.substr(i + 1, 3));
+					if (!isNextValue()) {
+						error("no octave number");
+					} else {
+						let n = readValue();
 						if (OCTAVE_MIN <= n || n <= OCTAVE_MAX) {
 							octave = n;
-							i += String(n).length;
 							break;
 						}
 					}
-					throw new Error(`pos ${i} : no octave number`);
-					return;
+					break;
 
 				case "<":
 					if (octave < OCTAVE_MAX) {
@@ -104,20 +138,21 @@ export default class MML2SMF {
 					break;
 
 				case "t":
+					if (!isNextValue()) {
+						error("no tempo number");
+					}
 					{
-						let tempo = parseInt(mml.substr(i + 1, 8));
+						let tempo = readValue();
 						let quarterMicroseconds = 60 * 1000 * 1000 / tempo;
 						
 						if (quarterMicroseconds < 1 || quarterMicroseconds > 0xffffff) {
-							throw new Error(`pos ${i} : illegal tempo`);
+							error("illegal tempo");
 						}
 
 						trackData.push(restTick, 0xff, 0x51, 0x03,
 							(quarterMicroseconds >> 16) & 0xff,
 							(quarterMicroseconds >> 8) & 0xff,
 							(quarterMicroseconds) & 0xff);
-
-						i += String(tempo).length;
 					}
 					break;
 			}
