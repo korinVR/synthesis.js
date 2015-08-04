@@ -6,7 +6,8 @@ Work-in-progress MIDI / MML sound system which contains:
 - SMF Player
 - MML to SMF converter
 
-The features are very limited for now. Working demo is at http://framesynthesis.com/experiments/synthesis.js/
+*This library is in development and is not ready for use yet.*  
+Working demo is at http://framesynthesis.com/experiments/synthesis.js/
 
 # Build
 
