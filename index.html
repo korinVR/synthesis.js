@@ -73,8 +73,8 @@
 		
 		<div class="instruction">
 			<h1>Web MIDI Synthesizer (WIP)</h1>
-			<p>Web MIDI API and Web Audio API experiment. Chrome 43 or later is required.<br>
-			The features are very limited for now. Currently you can:</p>
+			<p>Web MIDI API and Web Audio API experiment works on Chrome and iOS Safari.<br>
+			Currently you can:</p>
 			<p>- play with MIDI keyboard<br>
 			- play with PC keys (C key = C4, Space = Damper pedal)<br>
 			- play test SMF</br>
@@ -92,8 +92,8 @@
 		<div class="rack" id="mml2smf">
 			<h2>MML2SMF</h2>
 			<form onsubmit="playMML(); return false;">
-				<input id="mml" type="text" spellcheck="false" value="t140 o5 ccggaagr ffeeddcr; o4 cgegcgeg >b<gdg>b<gcr" style="width: 75%" />
-				<button>Play MML</button>
+				<textarea id="mml" type="text" spellcheck="false" style="width: 100%" rows="8">t140 o5 ccggaagr ffeeddcr; o4 cgegcgeg >b<gfg>b<gcr</textarea><br>
+				<button>Convert and Play</button>
 			</form>
 		</div>
 		

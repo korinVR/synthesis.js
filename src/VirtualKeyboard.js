@@ -28,7 +28,7 @@ export default class VirtualKeyboard {
 	}
 	
 	onKeyDown(event) {
-		if (event.target.nodeName == "INPUT") {
+		if (event.target.nodeName === "INPUT" || event.target.nodeName === "TEXTAREA") {
 			return;
 		}
 		
