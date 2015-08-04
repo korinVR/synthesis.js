@@ -16,8 +16,12 @@ export default class MML2SMF {
 			resolution & 0xff
 		];
 		
-		for (let trackMML of trackMMLs) {
-			let trackData = this.createTrackData(trackMML);
+		if (trackMMLs.length >= 16) {
+			throw new Error("over 16 tracks");
+		}
+		
+		for (let i = 0; i < trackMMLs.length; i++) {
+			let trackData = this.createTrackData(trackMMLs[i], i);
 
 			const trackHeader = [
 				0x4d, 0x54, 0x72, 0x6b,
@@ -33,7 +37,7 @@ export default class MML2SMF {
 		return new Uint8Array(smf);
 	}
 	
-	createTrackData(mml) {
+	createTrackData(mml, channel) {
 		const abcdefg = [9, 11, 0, 2, 4, 5, 7];
 		
 		let trackData = [];
@@ -128,9 +132,9 @@ export default class MML2SMF {
 					let velocity = 96;
 					
 					writeDeltaTick(restTick);
-					trackData.push(0x90, note, velocity);
+					trackData.push(0x90 | channel, note, velocity);
 					writeDeltaTick(tick);
-					trackData.push(0x80, note, 0);
+					trackData.push(0x80 | channel, note, 0);
 					restTick = 0;
 					break;
 
