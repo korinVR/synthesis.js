@@ -6,9 +6,9 @@
   "author": "Katsuomi Kobayashi",
   "license": "MIT",
   "scripts": {
-    "build": "browserify src/main.js | uglifyjs > build/output.js",
+    "build": "browserify src/main.js | uglifyjs > build/synthesis.js",
     "start": "browser-sync start --server --no-ghost-mode --files \"index.html, build/**\" --reload-delay 200",
-    "watch": "parallelshell \"watchify src/main.js -o build/output.js --debug --verbose --delay 50\" \"npm start\"",
+    "watch": "parallelshell \"watchify src/main.js -o build/synthesis.js --debug --verbose --delay 50\" \"npm start\"",
     "test": "mocha --compilers js:babel/register"
   },
   "browserify": {

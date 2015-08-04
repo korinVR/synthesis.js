@@ -1,8 +1,12 @@
-# Web MIDI Synthesizer
+# synthesis.js
 
-Web MIDI API and Web Audio API simple keyboard.
+Work-in-progress MIDI / MML sound system which contains:
 
-Working demo is at http://framesynthesis.com/experiments/WebMIDISynthesizer/
+- MIDI Synthesizer
+- SMF Player
+- MML to SMF converter
+
+The features are very limited for now. Working demo is at http://framesynthesis.com/experiments/synthesis.js/
 
 # Build
 
