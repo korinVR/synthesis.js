@@ -7,7 +7,7 @@ export default class MML2SMF {
 			throw new Error("over 16 tracks");
 		}
 		
-		let resolution = 480;
+		this.resolution = 480;
 		let smfFormat = (trackNum == 1) ? 0 : 1;
 		
 		let smf = [
@@ -16,8 +16,8 @@ export default class MML2SMF {
 			0x00, smfFormat, 
 			(trackNum >> 8) & 0xff,
 			trackNum & 0xff,
-			(resolution >> 8) & 0xff,
-			resolution & 0xff
+			(this.resolution >> 8) & 0xff,
+			this.resolution & 0xff
 		];
 		
 		for (let i = 0; i < trackNum; i++) {
@@ -41,7 +41,7 @@ export default class MML2SMF {
 		const abcdefg = [9, 11, 0, 2, 4, 5, 7];
 		
 		let trackData = [];
-		let tick = 240;
+		let tick = this.resolution;
 		
 		let restTick = 0;
 		
@@ -56,6 +56,9 @@ export default class MML2SMF {
 		}
 		
 		function isNextChar(candidates) {
+			if (p >= mml.length) {
+				return false;
+			}
 			let c = mml.charAt(p);
 			return candidates.includes(c);
 		}
@@ -97,7 +100,7 @@ export default class MML2SMF {
 		}
 		
 		while (p < mml.length) {
-			if (!isNextChar("cdefgabro<>t \n\r\t")) {
+			if (!isNextChar("cdefgabro<>lt \n\r\t")) {
 				error(`syntax error '${readChar()}'`);
 			}
 			let command = readChar();
@@ -125,12 +128,21 @@ export default class MML2SMF {
 							note--;
 						}
 					}
+					
+					let stepTime;
+					
+					if (isNextValue()) {
+						let length = readValue();
+						stepTime = this.resolution * 4 / length;
+					} else {
+						stepTime = tick;
+					}
 
 					let velocity = 96;
 					
 					writeDeltaTick(restTick);
 					trackData.push(0x90 | channel, note, velocity);
-					writeDeltaTick(tick);
+					writeDeltaTick(stepTime);
 					trackData.push(0x80 | channel, note, 0);
 					restTick = 0;
 					break;
@@ -162,12 +174,21 @@ export default class MML2SMF {
 						octave--;
 					}
 					break;
+				
+				case "l":
+					{
+						let length = 4;
+						if (isNextValue()) {
+							length = readValue();
+							tick = this.resolution * 4 / length;
+						}
+					}
+					break;
 
 				case "t":
 					if (!isNextValue()) {
 						error("no tempo number");
-					}
-					{
+					} else {
 						let tempo = readValue();
 						let quarterMicroseconds = 60 * 1000 * 1000 / tempo;
 						
