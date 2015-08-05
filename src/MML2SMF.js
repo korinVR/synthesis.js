@@ -3,6 +3,10 @@ export default class MML2SMF {
 		let trackMMLs = mml.split(";");
 		
 		let trackNum = trackMMLs.length;
+		if (trackNum >= 16) {
+			throw new Error("over 16 tracks");
+		}
+		
 		let resolution = 48;
 		let smfFormat = (trackNum == 1) ? 0 : 1;
 		
@@ -16,11 +20,7 @@ export default class MML2SMF {
 			resolution & 0xff
 		];
 		
-		if (trackMMLs.length >= 16) {
-			throw new Error("over 16 tracks");
-		}
-		
-		for (let i = 0; i < trackMMLs.length; i++) {
+		for (let i = 0; i < trackNum; i++) {
 			let trackData = this.createTrackData(trackMMLs[i], i);
 
 			const trackHeader = [
