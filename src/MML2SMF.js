@@ -57,10 +57,7 @@ export default class MML2SMF {
 		
 		function isNextChar(candidates) {
 			let c = mml.charAt(p);
-			if (candidates.indexOf(c) >= 0) {
-				return true;
-			}
-			return false;
+			return candidates.includes(c);
 		}
 		
 		function readValue() {

@@ -135,7 +135,7 @@ function synthesizerReset() {
 window.synthesizerReset = synthesizerReset;
 
 // set MML from query string
-if (location.search.indexOf("?mml=") === 0) {
+if (location.search.startsWith("?mml=")) {
 	let mml = decodeURIComponent(location.search.substring(5));
 	document.getElementById("mml").value = mml;
 }
