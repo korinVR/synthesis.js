@@ -97,7 +97,7 @@ export default class MML2SMF {
 		}
 		
 		while (p < mml.length) {
-			if (!isNextChar("cdefgabro<>t ")) {
+			if (!isNextChar("cdefgabro<>t \n\r\t")) {
 				error(`syntax error '${readChar()}'`);
 			}
 			let command = readChar();
