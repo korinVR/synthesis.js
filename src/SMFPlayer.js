@@ -60,17 +60,17 @@ class Track {
 	
 	readDeltaTick() {
 		let tick = 0;
+		let n;
 		
 		do {
-			let n = this.readByte();
+			n = this.readByte();
 			tick <<= 7;
-			tick |= n & 0x7f;
-		} while (tick & 0x80);
+			tick |= (n & 0x7f);
+		} while (n & 0x80);
 		
 		if (tick > 0xfffffff) {
 			throw new Error("illegal delta tick");
 		}
-		
 		return tick;
 	}
 }

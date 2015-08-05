@@ -7,7 +7,7 @@ export default class MML2SMF {
 			throw new Error("over 16 tracks");
 		}
 		
-		let resolution = 48;
+		let resolution = 480;
 		let smfFormat = (trackNum == 1) ? 0 : 1;
 		
 		let smf = [
@@ -41,7 +41,7 @@ export default class MML2SMF {
 		const abcdefg = [9, 11, 0, 2, 4, 5, 7];
 		
 		let trackData = [];
-		let tick = 24;
+		let tick = 240;
 		
 		let restTick = 0;
 		
