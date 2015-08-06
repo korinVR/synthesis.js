@@ -42,6 +42,7 @@ export default class MML2SMF {
 		
 		let trackData = [];
 		let tick = this.resolution;
+		let resolution = this.resolution;
 		
 		let restTick = 0;
 		
@@ -71,6 +72,18 @@ export default class MML2SMF {
 		
 		function isNextValue() {
 			return isNextChar("0123456789.-");
+		}
+		
+		function getNoteLength() {
+			let stepTime;
+			
+			if (isNextValue()) {
+				let length = readValue();
+				stepTime = resolution * 4 / length;
+			} else {
+				stepTime = tick;
+			}
+			return stepTime;
 		}
 		
 		function error(message) {
@@ -129,15 +142,7 @@ export default class MML2SMF {
 						}
 					}
 					
-					let stepTime;
-					
-					if (isNextValue()) {
-						let length = readValue();
-						stepTime = this.resolution * 4 / length;
-					} else {
-						stepTime = tick;
-					}
-
+					let stepTime = getNoteLength();
 					let velocity = 96;
 					
 					writeDeltaTick(restTick);
@@ -148,7 +153,10 @@ export default class MML2SMF {
 					break;
 
 				case "r":
-					restTick += tick;
+					{
+						let stepTime = getNoteLength();
+						restTick += stepTime;
+					}
 					break;
 
 				case "o":
@@ -180,8 +188,8 @@ export default class MML2SMF {
 						let length = 4;
 						if (isNextValue()) {
 							length = readValue();
-							tick = this.resolution * 4 / length;
 						}
+						tick = this.resolution * 4 / length;
 					}
 					break;
 
