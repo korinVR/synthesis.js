@@ -52,10 +52,6 @@ export default class MML2SMF {
 		
 		let p = 0;
 		
-		function readChar() {
-			return mml.charAt(p++);
-		}
-		
 		function isNextChar(candidates) {
 			if (p >= mml.length) {
 				return false;
@@ -64,26 +60,58 @@ export default class MML2SMF {
 			return candidates.includes(c);
 		}
 		
-		function readValue() {
-			let value = parseInt(mml.substr(p, 10));
-			p += String(value).length;
-			return value;
+		function readChar() {
+			return mml.charAt(p++);
 		}
 		
 		function isNextValue() {
 			return isNextChar("0123456789.-");
 		}
 		
-		function getNoteLength() {
-			let stepTime;
-			
-			if (isNextValue()) {
-				let length = readValue();
-				stepTime = resolution * 4 / length;
-			} else {
-				stepTime = tick;
+		function readValue() {
+			let value = parseInt(mml.substr(p, 10));
+			p += String(value).length;
+			return value;
+		}
+		
+		function isNextInt() {
+			return isNextChar("0123456789-");
+		}
+		
+		function readInt() {
+			let s = "";
+			while (isNextInt()) {
+				s += readChar();
 			}
-			return stepTime;
+			return parseInt(s);
+		}
+		
+		function readNoteLength() {
+			let totalStepTime = 0;
+			
+			do {
+				let stepTime;
+				
+				// read note length
+				if (isNextInt()) {
+					let length = readInt();
+					stepTime = resolution * 4 / length;
+				} else {
+					stepTime = tick;
+				}
+				
+				// dotted note
+				let dottedTime = stepTime;
+				while (isNextChar(".")) {
+					readChar();
+					dottedTime /= 2;
+					stepTime += dottedTime;
+				}
+				
+				totalStepTime += stepTime;
+			} while (isNextChar("^") && readChar()); // tie
+			
+			return totalStepTime;
 		}
 		
 		function error(message) {
@@ -142,7 +170,7 @@ export default class MML2SMF {
 						}
 					}
 					
-					let stepTime = getNoteLength();
+					let stepTime = readNoteLength();
 					let velocity = 96;
 					
 					writeDeltaTick(restTick);
@@ -154,7 +182,7 @@ export default class MML2SMF {
 
 				case "r":
 					{
-						let stepTime = getNoteLength();
+						let stepTime = readNoteLength();
 						restTick += stepTime;
 					}
 					break;
