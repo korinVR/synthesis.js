@@ -50,6 +50,8 @@ export default class MML2SMF {
 		const OCTAVE_MAX = 10;
 		let octave = 4;
 		
+		let q = 6;
+		
 		let p = 0;
 		
 		function isNextChar(candidates) {
@@ -141,7 +143,7 @@ export default class MML2SMF {
 		}
 		
 		while (p < mml.length) {
-			if (!isNextChar("cdefgabro<>lt \n\r\t")) {
+			if (!isNextChar("cdefgabro<>lqt \n\r\t")) {
 				error(`syntax error '${readChar()}'`);
 			}
 			let command = readChar();
@@ -171,13 +173,14 @@ export default class MML2SMF {
 					}
 					
 					let stepTime = readNoteLength();
+					let gateTime = Math.round(stepTime * q / 8);
 					let velocity = 96;
 					
 					writeDeltaTick(restTick);
 					trackData.push(0x90 | channel, note, velocity);
-					writeDeltaTick(stepTime);
+					writeDeltaTick(gateTime);
 					trackData.push(0x80 | channel, note, 0);
-					restTick = 0;
+					restTick = stepTime - gateTime;
 					break;
 
 				case "r":
@@ -218,6 +221,17 @@ export default class MML2SMF {
 							length = readValue();
 						}
 						tick = this.resolution * 4 / length;
+					}
+					break;
+					
+				case "q":
+					{
+						if (isNextValue()) {
+							q = readValue();
+							if (q < 1 || q > 8) {
+								error("illegal q value");
+							}
+						}
 					}
 					break;
 
