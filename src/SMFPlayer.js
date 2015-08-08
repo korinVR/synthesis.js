@@ -98,7 +98,7 @@ export default class SMFPlayer {
 		
 		let format = read2bytes();
 		this.trackNumber = read2bytes();
-		this.resolution = read2bytes();
+		this.timebase = read2bytes();
 		
 		// error check
 		const SMF_HEADER = [0x4d, 0x54, 0x68, 0x64, 0x00, 0x00, 0x00, 0x06];
@@ -153,7 +153,7 @@ export default class SMFPlayer {
 		let deltaTime = currentTime - this.prevTime;
 		this.prevTime = currentTime; 
 		
-		let tickTime = this.quarterTime / this.resolution;
+		let tickTime = this.quarterTime / this.timebase;
 			
 		this.currentTick += deltaTime / tickTime;
 		

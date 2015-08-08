@@ -7,7 +7,7 @@ export default class MML2SMF {
 			throw new Error("over 16 tracks");
 		}
 		
-		this.resolution = 480;
+		this.timebase = 480;
 		let smfFormat = (trackNum == 1) ? 0 : 1;
 		
 		let smf = [
@@ -16,8 +16,8 @@ export default class MML2SMF {
 			0x00, smfFormat, 
 			(trackNum >> 8) & 0xff,
 			trackNum & 0xff,
-			(this.resolution >> 8) & 0xff,
-			this.resolution & 0xff
+			(this.timebase >> 8) & 0xff,
+			this.timebase & 0xff
 		];
 		
 		for (let i = 0; i < trackNum; i++) {
@@ -41,8 +41,8 @@ export default class MML2SMF {
 		const abcdefg = [9, 11, 0, 2, 4, 5, 7];
 		
 		let trackData = [];
-		let tick = this.resolution;
-		let resolution = this.resolution;
+		let tick = this.timebase;
+		let timebase = this.timebase;
 		
 		let restTick = 0;
 		
@@ -97,7 +97,7 @@ export default class MML2SMF {
 				// read note length
 				if (isNextInt()) {
 					let length = readInt();
-					stepTime = resolution * 4 / length;
+					stepTime = timebase * 4 / length;
 				} else {
 					stepTime = tick;
 				}
@@ -220,7 +220,7 @@ export default class MML2SMF {
 						if (isNextValue()) {
 							length = readValue();
 						}
-						tick = this.resolution * 4 / length;
+						tick = this.timebase * 4 / length;
 					}
 					break;
 					
