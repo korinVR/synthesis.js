@@ -1,5 +1,7 @@
 export default class MML2SMF {
 	convert(mml) {
+		this.startTick = 0;
+		
 		let trackMMLs = mml.split(";");
 		
 		let trackNum = trackMMLs.length;
@@ -43,6 +45,8 @@ export default class MML2SMF {
 		let trackData = [];
 		let tick = this.timebase;
 		let timebase = this.timebase;
+		
+		let currentTick = 0;
 		
 		let restTick = 0;
 		
@@ -143,7 +147,7 @@ export default class MML2SMF {
 		}
 		
 		while (p < mml.length) {
-			if (!isNextChar("cdefgabro<>lqt \n\r\t")) {
+			if (!isNextChar("cdefgabro<>lqt? \n\r\t")) {
 				error(`syntax error '${readChar()}'`);
 			}
 			let command = readChar();
@@ -181,12 +185,16 @@ export default class MML2SMF {
 					writeDeltaTick(gateTime);
 					trackData.push(0x80 | channel, note, 0);
 					restTick = stepTime - gateTime;
+					
+					currentTick += stepTime;
 					break;
 
 				case "r":
 					{
 						let stepTime = readNoteLength();
 						restTick += stepTime;
+						
+						currentTick += stepTime;
 					}
 					break;
 
@@ -253,9 +261,18 @@ export default class MML2SMF {
 							(quarterMicroseconds) & 0xff);
 					}
 					break;
+				
+				case "?":
+					// get start tick
+					this.startTick = currentTick;
+					break;
 			}
 		}
 		
 		return trackData;
+	}
+	
+	getStartTick() {
+		return this.startTick;
 	}
 }

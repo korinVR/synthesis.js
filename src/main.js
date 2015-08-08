@@ -108,8 +108,9 @@ function playMML() {
 	Debug.log("Convert MML: " + mml);
 	try {
 		let smf = mml2smf.convert(mml);
+		let startTick = mml2smf.getStartTick();
 		Debug.log("Play SMF");
-		smfPlayer.play(smf);
+		smfPlayer.play(smf, startTick);
 	} catch (e) {
 		Debug.log(e.message);
 	}

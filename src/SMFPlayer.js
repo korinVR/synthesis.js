@@ -1,5 +1,5 @@
 const TEMPO_DEFAULT = 120;
-const INTERVAL = 1 / 60;
+const INTERVAL = 1 / 100;
 
 class Track {
 	constructor(player, pos, length) {
@@ -12,7 +12,7 @@ class Track {
 		this.nextEventTick = this.readDeltaTick();
 	}
 	
-	update(currentTick) {
+	update(currentTick, seeking) {
 		if (this.finished) {
 			return;
 		}
@@ -40,7 +40,11 @@ class Track {
 				let dataByte1 = this.readByte();
 				let dataByte2 = this.readByte();
 				
-				this.player.synthesizer.processMIDIMessage([statusByte, dataByte1, dataByte2]);
+				if (seeking && ((statusByte >> 4) == 0x9 || ((statusByte >> 4) == 0x8))) {
+					// disable Note On/Off when seeking
+				} else {
+					this.player.synthesizer.processMIDIMessage([statusByte, dataByte1, dataByte2]);
+				}
 			}
 
 			if (this.pos >= this.endPos) {
@@ -80,8 +84,9 @@ export default class SMFPlayer {
 		this.synthesizer = synthesizer;
 	}
 	
-	play(smf, startTick) {
+	play(smf, startTick = 0) {
 		this.smf = smf;
+		this.startTick = startTick;
 		
 		this.quarterTime = 60 * 1000 / TEMPO_DEFAULT; // ms
 		
@@ -132,11 +137,6 @@ export default class SMFPlayer {
 		this.prevTime = Date.now();
 		this.currentTick = 0;
 		
-		if (startTick > 0) {
-			this.currentTIck = startTick;
-			this.seeking = true;
-		}
-		
 		if (!this.intervalId) {
 			this.intervalId = setInterval(() => this.onInterval(), INTERVAL);
 		}
@@ -154,15 +154,23 @@ export default class SMFPlayer {
 		this.prevTime = currentTime; 
 		
 		let tickTime = this.quarterTime / this.timebase;
-			
-		this.currentTick += deltaTime / tickTime;
 		
-		for (let track of this.tracks) {
-			track.update(this.currentTick, this.seeking);
+		let seeking = false;
+		if (this.currentTick < this.startTick) {
+			// seek to start tick slowly
+			// this.currentTick += deltaTime * 100 / tickTime;
+			// if (this.currentTick > this.startTick) {
+			// 	this.currentTick = this.startTick;
+			// }
+			
+			this.currentTick = this.startTick;
+			seeking = true;
+		} else {
+			this.currentTick += deltaTime / tickTime;
 		}
 		
-		if (this.seeking) {
-			this.seeking = false;
+		for (let track of this.tracks) {
+			track.update(this.currentTick, seeking);
 		}
 		
 		// stop when all tracks finish
