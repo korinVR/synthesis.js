@@ -39,7 +39,7 @@ class Track {
 				// MIDI event
 				let dataByte1 = this.readByte();
 				let dataByte2 = this.readByte();
-
+				
 				this.player.synthesizer.processMIDIMessage([statusByte, dataByte1, dataByte2]);
 			}
 
@@ -80,7 +80,7 @@ export default class SMFPlayer {
 		this.synthesizer = synthesizer;
 	}
 	
-	play(smf) {
+	play(smf, startTick) {
 		this.smf = smf;
 		
 		this.quarterTime = 60 * 1000 / TEMPO_DEFAULT; // ms
@@ -132,6 +132,11 @@ export default class SMFPlayer {
 		this.prevTime = Date.now();
 		this.currentTick = 0;
 		
+		if (startTick > 0) {
+			this.currentTIck = startTick;
+			this.seeking = true;
+		}
+		
 		if (!this.intervalId) {
 			this.intervalId = setInterval(() => this.onInterval(), INTERVAL);
 		}
@@ -153,7 +158,11 @@ export default class SMFPlayer {
 		this.currentTick += deltaTime / tickTime;
 		
 		for (let track of this.tracks) {
-			track.update(this.currentTick);
+			track.update(this.currentTick, this.seeking);
+		}
+		
+		if (this.seeking) {
+			this.seeking = false;
 		}
 		
 		// stop when all tracks finish
