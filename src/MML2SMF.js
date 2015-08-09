@@ -1,5 +1,5 @@
 export default class MML2SMF {
-	convert(mml) {
+	convert(mml, timebase = 480) {
 		this.startTick = 0;
 		
 		let trackMMLs = mml.split(";");
@@ -9,7 +9,7 @@ export default class MML2SMF {
 			throw new Error("over 16 tracks");
 		}
 		
-		this.timebase = 480;
+		this.timebase = timebase;
 		let smfFormat = (trackNum == 1) ? 0 : 1;
 		
 		let smf = [
@@ -147,7 +147,7 @@ export default class MML2SMF {
 		}
 		
 		while (p < mml.length) {
-			if (!isNextChar("cdefgabro<>lqt? \n\r\t")) {
+			if (!isNextChar("cdefgabro<>lqtvE? \n\r\t")) {
 				error(`syntax error '${readChar()}'`);
 			}
 			let command = readChar();
@@ -259,6 +259,36 @@ export default class MML2SMF {
 							(quarterMicroseconds >> 16) & 0xff,
 							(quarterMicroseconds >> 8) & 0xff,
 							(quarterMicroseconds) & 0xff);
+					}
+					break;
+				
+				case "v":
+					if (!isNextValue()) {
+						error("no volume value");
+					} else {
+						let volume = readValue();
+
+						if (volume < 0 || volume > 127) {
+							error("illegal volume");
+						}
+
+						writeDeltaTick(restTick);
+						trackData.push(0xb0 | channel, 7, volume);
+					}
+					break;
+				
+				case "E":
+					if (!isNextValue()) {
+						error("no expression value");
+					} else {
+						let expression = readValue();
+
+						if (expression < 0 || expression > 127) {
+							error("illegal expression");
+						}
+
+						writeDeltaTick(restTick);
+						trackData.push(0xb0 | channel, 11, expression);
 					}
 					break;
 				

@@ -125,14 +125,16 @@
 			<div class="instruction">
 				<h3>MML Commands</h3>
 				<table style="border-spacing: 20px 0;">
-					<tr><td>notes<td>c, d, e, f, g, a, b, +, -
-					<tr><td>octave<td>o[octave], &lt;, &gt;
-					<tr><td>note length<td>l[note length]
-					<tr><td>gate time<td>q[1-8]
-					<tr><td>tempo<td>t[tempo]
-					<tr><td>next track<td>;
-					<tr><td>tie<td>^
-					<tr><td>play from here<td>?
+					<tr><td>Notes<td>c, d, e, f, g, a, b, +, -
+					<tr><td>Octave<td>o[octave], &lt;, &gt;
+					<tr><td>Note Length<td>l[note length]
+					<tr><td>Tempo<td>t[tempo]
+					<tr><td>Gate Time<td>q[1-8]
+					<tr><td>Channel Volume<td>v[0-127]
+					<tr><td>Expression Controller<td>E[0-127]
+					<tr><td>Next Track<td>;
+					<tr><td>Tie<td>^
+					<tr><td>Play from Here<td>?
 				</table>
 			</div>
 		</div>
@@ -153,9 +155,11 @@
 					<dd>
 					<p>Note On/Off<br>
 					Pitch Bend<br>
-					CC 1 (Modulation wheel)<br>
-					CC 64 (Damper pedal On/Off)<br>
-					CC 123 (All notes off)<br>
+					CC 1 (Modulation Wheel)<br>
+					CC 7 (Channel Volume)<br>
+					CC 11 (Expression Controller)<br>
+					CC 64 (Damper Pedal On/Off)<br>
+					CC 123 (All Notes Off)<br>
 				</dl>
 			</div>
 		</div>

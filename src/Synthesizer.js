@@ -75,8 +75,16 @@ export default class Synthesizer {
 			let value = data[2];
 
 			if (controlNumber === 1) {
-				this.log(`Ch. ${midiChannel} Modulation wheel: ${value}`);
+				this.log(`Ch. ${midiChannel} Modulation Wheel: ${value}`);
 				this.channels[channel].setModulationWheel(value);
+			}
+			if (controlNumber === 7) {
+				this.log(`Ch. ${midiChannel} Channel Volume: ${value}`);
+				this.channels[channel].setVolume(value);
+			}
+			if (controlNumber === 11) {
+				this.log(`Ch. ${midiChannel} Expression Controller: ${value}`);
+				this.channels[channel].setExpression(value);
 			}
 			if (controlNumber === 64) {
 				if (value >= 64) {

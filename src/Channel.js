@@ -10,11 +10,18 @@ export default class Channel {
 		}
 
 		this.keyState = [];
+		
+		// General MIDI default
+		this.volume = 100;
+		this.expression = 127;
 
 		this.damperPedal = false;
 
 		this.pitchBend = 0;
 		this.modulationWheel = 0;
+		
+		// preallocate channel buffer with margin
+		this.channelBuffer = new Float32Array(4096);
 	}
 
 	noteOn(note) {
@@ -80,10 +87,27 @@ export default class Channel {
 	setModulationWheel(wheel) {
 		this.modulationWheel = wheel / 127;
 	}
+	
+	setVolume(volume) {
+		this.volume = volume;
+	}
+	
+	setExpression(expression) {
+		this.expression = expression;
+	}
 
 	render(buffer, sampleRate) {
+		for (let i = 0; i < buffer.length; i++) {
+			this.channelBuffer[i] = 0;
+		}
+		
 		for (let i = 0; i < VOICE_MAX; i++) {
-			this.voices[i].render(buffer, sampleRate);
+			this.voices[i].render(this.channelBuffer, buffer.length, sampleRate);
+		}
+		
+		let gain = (this.volume / 127) * (this.expression / 127);
+		for (let i = 0; i < buffer.length; i++) {
+			buffer[i] += this.channelBuffer[i] * gain;
 		}
 	}
 }

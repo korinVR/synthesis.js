@@ -6,7 +6,7 @@ Work-in-progress MIDI / MML sound system which contains:
 - SMF Player
 - MML to SMF converter
 
-*This library is in development and is not ready for use yet.*  
+**This library is in development and is not ready for use yet.**  
 Working demo is at http://framesynthesis.com/experiments/synthesis.js/
 
 # Build
@@ -20,9 +20,11 @@ $ npm run watch
 
 - Note On/Off
 - Pitch Bend
-- CC 1 (Modulation wheel)
-- CC 64 (Damper pedal On/Off)
-- CC 123 (All notes off)
+- CC 1 (Modulation Wheel)
+- CC 7 (Channel Volume)
+- CC 11 (Expression Controller)
+- CC 64 (Damper Pedal On/Off)
+- CC 123 (All Notes Off)
 
 # License
 

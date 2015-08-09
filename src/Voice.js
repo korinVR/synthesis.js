@@ -35,9 +35,9 @@ export default class Voice {
 		this.state = STATE_RELEASE;
 	}
 	
-	render(buffer, sampleRate) {
+	render(buffer, length, sampleRate) {
 		if (this.state !== STATE_OFF) {
-			for (let i = 0; i < buffer.length; i++) {
+			for (let i = 0; i < length; i++) {
 				let amplitude = this.synthesizer.modulationWheel * this.vibratoAmplitude;
 				
 				let vibratoPeriod = sampleRate / this.vibratoFrequency;
