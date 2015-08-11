@@ -23,13 +23,14 @@ export default class Synthesizer {
 		}
 	}
 	
-	render(buffer, sampleRate) {
-		for (let i = 0; i < buffer.length; i++) {
-			buffer[i] = 0;
+	render(bufferL, bufferR, sampleRate) {
+		for (let i = 0; i < bufferL.length; i++) {
+			bufferL[i] = 0;
+			bufferR[i] = 0;
 		}
 		
 		for (let i = 0; i < CHANNEL_MAX; i++) {
-			this.channels[i].render(buffer, sampleRate);
+			this.channels[i].render(bufferL, bufferR, sampleRate);
 		}
 	}
 	
@@ -81,6 +82,10 @@ export default class Synthesizer {
 			if (controlNumber === 7) {
 				this.log(`Ch. ${midiChannel} Channel Volume: ${value}`);
 				this.channels[channel].setVolume(value);
+			}
+			if (controlNumber === 10) {
+				this.log(`Ch. ${midiChannel} Pan: ${value}`);
+				this.channels[channel].setPan(value);
 			}
 			if (controlNumber === 11) {
 				this.log(`Ch. ${midiChannel} Expression Controller: ${value}`);

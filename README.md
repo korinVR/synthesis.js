@@ -22,6 +22,7 @@ $ npm run watch
 - Pitch Bend
 - CC 1 (Modulation Wheel)
 - CC 7 (Channel Volume)
+- CC 10 (Pan)
 - CC 11 (Expression Controller)
 - CC 64 (Damper Pedal On/Off)
 - CC 123 (All Notes Off)

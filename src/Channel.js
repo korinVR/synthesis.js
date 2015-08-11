@@ -1,3 +1,4 @@
+import MyMath from "./framesynthesis/MyMath";
 import Voice from "./Voice";
 
 const VOICE_MAX = 32;
@@ -13,6 +14,7 @@ export default class Channel {
 		
 		// General MIDI default
 		this.volume = 100;
+		this.pan = 64;
 		this.expression = 127;
 
 		this.damperPedal = false;
@@ -92,22 +94,30 @@ export default class Channel {
 		this.volume = volume;
 	}
 	
+	setPan(pan) {
+		this.pan = pan;
+	}
+	
 	setExpression(expression) {
 		this.expression = expression;
 	}
 
-	render(buffer, sampleRate) {
-		for (let i = 0; i < buffer.length; i++) {
+	render(bufferL, bufferR, sampleRate) {
+		for (let i = 0; i < bufferL.length; i++) {
 			this.channelBuffer[i] = 0;
 		}
 		
 		for (let i = 0; i < VOICE_MAX; i++) {
-			this.voices[i].render(this.channelBuffer, buffer.length, sampleRate);
+			this.voices[i].render(this.channelBuffer, bufferL.length, sampleRate);
 		}
 		
 		let gain = (this.volume / 127) * (this.expression / 127);
-		for (let i = 0; i < buffer.length; i++) {
-			buffer[i] += this.channelBuffer[i] * gain;
+		let gainL = gain * MyMath.clampedLinearMap(this.pan, 64, 127, 1, 0);
+		let gainR = gain * MyMath.clampedLinearMap(this.pan, 0, 64, 0, 1);
+		
+		for (let i = 0; i < bufferL.length; i++) {
+			bufferL[i] += this.channelBuffer[i] * gainL;
+			bufferR[i] += this.channelBuffer[i] * gainR;
 		}
 	}
 }

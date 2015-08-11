@@ -147,7 +147,7 @@ export default class MML2SMF {
 		}
 		
 		while (p < mml.length) {
-			if (!isNextChar("cdefgabro<>lqtvE? \n\r\t")) {
+			if (!isNextChar("cdefgabro<>lqtvpE? \n\r\t")) {
 				error(`syntax error '${readChar()}'`);
 			}
 			let command = readChar();
@@ -274,6 +274,21 @@ export default class MML2SMF {
 
 						writeDeltaTick(restTick);
 						trackData.push(0xb0 | channel, 7, volume);
+					}
+					break;
+				
+				case "p":
+					if (!isNextValue()) {
+						error("no panpot value");
+					} else {
+						let pan = readValue();
+						
+						if (pan < -64 || pan > 63) {
+							error("illegal pan (-64 - 63)");
+						}
+						
+						writeDeltaTick(restTick);
+						trackData.push(0xb0 | channel, 10, pan + 64);
 					}
 					break;
 				

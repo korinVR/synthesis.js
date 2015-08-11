@@ -17,7 +17,8 @@ export default class AudioManager {
 			return;
 		}
 		
-		this.buffer = new Float32Array(this.bufferSize);
+		this.bufferL = new Float32Array(this.bufferSize);
+		this.bufferR = new Float32Array(this.bufferSize);
 		
 		this.scriptProcessor = this.context.createScriptProcessor(this.bufferSize, 0, 2);
 		this.scriptProcessor.onaudioprocess = e => this.process(e);
@@ -35,11 +36,11 @@ export default class AudioManager {
 		let outL = e.outputBuffer.getChannelData(0);
 		let outR = e.outputBuffer.getChannelData(1);
 		
-		this.synthesizer.render(this.buffer, this.context.sampleRate);
+		this.synthesizer.render(this.bufferL, this.bufferR, this.context.sampleRate);
 		
 		for (let i = 0; i < this.bufferSize; i++) {
-			outL[i] = this.buffer[i];
-			outR[i] = this.buffer[i];
+			outL[i] = this.bufferL[i];
+			outR[i] = this.bufferR[i];
 		}
 	}
 }
