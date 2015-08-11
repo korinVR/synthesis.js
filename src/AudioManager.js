@@ -1,17 +1,13 @@
-import Platform from "./framesynthesis/Platform";
 import Debug from "./framesynthesis/Debug";
 
 export default class AudioManager {
 	constructor(synthesizer, bufferSize = 1024) {
 		this.synthesizer = synthesizer;
 		this.bufferSize = bufferSize;
-
+		
 		try {
-			if (Platform.isiOS()) {
-				this.context = new webkitAudioContext();
-			} else {
-				this.context = new AudioContext();
-			}
+			// webkitAudioContext is for iOS 8
+			this.context = window.AudioContext ? new AudioContext() : new webkitAudioContext();
 		} catch (e) {
 			Debug.log("error: This browser does not support Web Audio API.");
 			return;
