@@ -1,0 +1,27 @@
+{
+  "name": "showcase",
+  "version": "0.0.0",
+  "description": "",
+  "main": "src/main.js",
+  "author": "Katsuomi Kobayashi",
+  "license": "MIT",
+  "scripts": {
+    "build": "browserify src/main.js -o build/showcase.js",
+    "start": "cd ../.. & browser-sync start --server --no-ghost-mode --startPath examples/showcase --files \"examples/showcase/index.html, examples/showcase/build/**\" --reload-delay 200",
+    "watch": "parallelshell \"watchify src/main.js -o build/showcase.js --debug --verbose --delay 50\" \"npm start\"",
+    "test": "mocha --compilers js:babel/register"
+  },
+  "browserify": {
+    "transform": [
+      "babelify"
+    ]
+  },
+  "devDependencies": {
+    "browserify": "*",
+    "watchify": "*", 
+    "babelify": "*",
+    "browser-sync": "*",
+    "parallelshell": "*",
+    "mocha": "*"
+  }
+}

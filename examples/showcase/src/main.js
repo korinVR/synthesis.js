@@ -1,22 +1,7 @@
-let MML2SMF = require("MML2SMF");
-
-import Debug from "../src/framesynthesis/Debug";
-import Platform from "../src/framesynthesis/Platform";
+import Debug from "../../../src/framesynthesis/Debug";
 import VirtualKeyboard from "./VirtualKeyboard";
 
-let synthesizer = new Synthesizer({ verbose: true });
-
-let audioManager = null;
-if (!Platform.isiOS()) {
-	initAudioManager();
-}
-
-function initAudioManager() {
-	if (!audioManager) {
-		Debug.log("Initializing Web Audio");
-		audioManager = new AudioManager(synthesizer);
-	}
-}
+let synthesizer = new synthesisjs.Synthesizer({ verbose: true });
 
 let virtualKeyboard = new VirtualKeyboard(synthesizer);
 
@@ -54,11 +39,9 @@ function onMIDIMessage(event) {
 	synthesizer.processMIDIMessage(event.data);
 }
 
-let smfPlayer = new SMFPlayer(synthesizer);
+let smfPlayer = new synthesisjs.SMFPlayer(synthesizer);
 
 function playSMF() {
-	initAudioManager();
-	
 	Debug.log("Play test SMF");
 	
 	let tick = 24;
@@ -98,9 +81,7 @@ window.playSMF = playSMF;
 window.stopSMF = stopSMF;
 
 function playMML() {
-	initAudioManager();
-	
-	let mml2smf = new MML2SMF();
+	let mml2smf = new synthesisjs.MML2SMF();
 	let mml = document.getElementById("mml").value;
 	Debug.log("Convert MML: " + mml);
 	try {

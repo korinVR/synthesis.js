@@ -1,4 +1,6 @@
 import Debug from "./framesynthesis/Debug";
+import Platform from "./framesynthesis/Platform";
+import AudioManager from "./AudioManager";
 import Channel from "./Channel";
 
 const CHANNEL_MAX = 16;
@@ -13,8 +15,20 @@ export default class Synthesizer {
 		}
 		
 		this.reset();
+		
+		this.audioManager = null;
+		if (!Platform.isiOS()) {
+			this.createAudioManager();
+		}
 	}
 	
+	createAudioManager() {
+		if (!this.audioManager) {
+			Debug.log("Initializing Web Audio");
+			this.audioManager = new AudioManager(this);
+		}
+	}
+
 	reset() {
 		Debug.log("Initializing Synthesizer");
 		
@@ -42,6 +56,9 @@ export default class Synthesizer {
 		if (data.length < 3) {
 			return;
 		}
+		
+		// avoid iOS audio restriction
+		this.createAudioManager();
 		
 		let statusByte = data[0];
 		let statusUpper4bits = statusByte >> 4;

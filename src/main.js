@@ -1,11 +1,8 @@
-import Debug from "./framesynthesis/Debug";
-import Platform from "./framesynthesis/Platform";
-import Synthesizer from "./Synthesizer";
-import AudioManager from "./AudioManager";
-import SMFPlayer from "./SMFPlayer";
+import mml2smf from "MML2SMF";
+import synthesizer from "./Synthesizer";
+import smfPlayer from "./SMFPlayer";
 
-// export
-window.Synthesizer = Synthesizer;
-window.AudioManager = AudioManager;
-window.SMFPlayer = SMFPlayer;
+export var MML2SMF = mml2smf;
+export var Synthesizer = synthesizer;
+export var SMFPlayer = smfPlayer;
 

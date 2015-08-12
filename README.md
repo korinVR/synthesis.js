@@ -1,10 +1,49 @@
 # synthesis.js
 
-**This library is in development and is not ready for use yet.**  
-Work-in-progress MIDI synthesizer. Currently it has square wave only.  
+Work-in-progress MIDI / MML synthesizer for Chrome, Edge and iOS Safari. This library is in a very early stage. Currently it has square wave only.  
 
-Working demo is at http://framesynthesis.com/experiments/synthesis.js/  
+Working demo is at http://framesynthesis.com/experiments/synthesis.js/examples/showcase/  
 You can play it with MIDI keyboard or [MML2SMF](https://github.com/KatsuomiK/mml2smf) MMLs.
+
+# Usage
+
+Requires [Babel polyfill](https://babeljs.io/docs/usage/polyfill/)
+
+```js
+// Browser:
+<script src="browser-polyfill.min.js"></script>
+<script src="synthesis.min.js"></script>
+
+// Node:
+var synthesisjs = require("synthesisjs");
+```
+
+## Play a note (MIDI Message)
+
+```js
+var synthesizer = new synthesisjs.Synthesizer();
+
+setTimeout(function() {
+	// Note On
+	synthesizer.processMIDIMessage([0x90, 60, 100]);
+}, 1000);
+
+setTimeout(function() {
+	// Note off
+	synthesizer.processMIDIMessage([0x80, 60, 100]);
+}, 2000);
+```
+
+## Play MML
+
+```js
+var mml2smf = new synthesisjs.MML2SMF();
+var smf = mml2smf.convert("t150l8 g4gagrfrerfrg2");
+
+var synthesizer = new synthesisjs.Synthesizer();
+var smfPlayer = new synthesisjs.SMFPlayer(synthesizer);
+smfPlayer.play(smf);
+```
 
 # Build
 
