@@ -1,13 +1,10 @@
 # synthesis.js
 
-Work-in-progress MIDI / MML sound system which contains:
-
-- MIDI Synthesizer
-- SMF Player
-- MML to SMF converter
-
 **This library is in development and is not ready for use yet.**  
-Working demo is at http://framesynthesis.com/experiments/synthesis.js/
+Work-in-progress MIDI synthesizer. Currenatly it has square wave only.  
+
+Working demo is at http://framesynthesis.com/experiments/synthesis.js/  
+You can play it with MIDI keyboard or [MML2SMF](https://github.com/KatsuomiK/mml2smf) MMLs.
 
 # Build
 
