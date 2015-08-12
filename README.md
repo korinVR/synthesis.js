@@ -1,7 +1,7 @@
 # synthesis.js
 
 **This library is in development and is not ready for use yet.**  
-Work-in-progress MIDI synthesizer. Currenatly it has square wave only.  
+Work-in-progress MIDI synthesizer. Currently it has square wave only.  
 
 Working demo is at http://framesynthesis.com/experiments/synthesis.js/  
 You can play it with MIDI keyboard or [MML2SMF](https://github.com/KatsuomiK/mml2smf) MMLs.

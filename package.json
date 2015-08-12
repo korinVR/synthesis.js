@@ -1,5 +1,5 @@
 {
-  "name": "WebMIDISynthesizer",
+  "name": "synthesis.js",
   "version": "0.0.0",
   "description": "",
   "main": "src/main.js",
