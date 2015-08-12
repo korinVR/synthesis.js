@@ -53,14 +53,14 @@ export default class Synthesizer {
 			let velocity = data[2];
 
 			this.log(`Ch. ${midiChannel} Note On  note: ${note} velocity: ${velocity}`);
-			this.channels[channel].noteOn(note);
+			this.channels[channel].noteOn(note, velocity);
 		}
 		if (statusUpper4bits === 0x8) {
 			let note = data[1];
 			let velocity = data[2];
 
 			this.log(`Ch. ${midiChannel} Note Off note: ${note} velocity: ${velocity}`);
-			this.channels[channel].noteOff(note);
+			this.channels[channel].noteOff(note, velocity);
 		}
 		
 		if (statusUpper4bits === 0xe) {

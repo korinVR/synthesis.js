@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
 	<meta name="viewport" content="initial-scale=1,user-scalable=no">
-	<title>synthesis.js - MIDI / MML Synthesizer (WIP)</title>
+	<title>synthesis.js - MIDI / MML Synthesizer</title>
 	<style>
 		body {
 		    background-color: #F8F8F8;
@@ -100,7 +100,7 @@
 		<a href="https://github.com/KatsuomiK/synthesis.js"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
 		
 		<header>
-			<h1>synthesis.js - MIDI / MML Sound System (WIP)</h1>	
+			<h1>synthesis.js - MIDI / MML Synthesizer (WIP)</h1>
 			<p>Web Audio API and Web MIDI API experiment works on Chrome and iOS Safari.<br>
 			The features are very limited for now. Currently you can:</p>
 			<p>- play with MIDI keyboard<br>
@@ -126,10 +126,11 @@
 				<h3>MML Commands</h3>
 				<table style="border-spacing: 20px 0;">
 					<tr><td>Notes<td>c, d, e, f, g, a, b, +, -
-					<tr><td>Octave<td>o[octave], &lt;, &gt;
-					<tr><td>Note Length<td>l[note length]
-					<tr><td>Tempo<td>t[tempo]
+					<tr><td>Octave<td>o[octave], &lt;, &gt; (4)
+					<tr><td>Note Length<td>l[note length] (4)
+					<tr><td>Tempo<td>t[tempo] (120)
 					<tr><td>Gate Time<td>q[1-8] (6)
+					<tr><td>Velocity<td>u[0-127] (100)
 					<tr><td>Channel Volume<td>v[0-127] (100)
 					<tr><td>Pan<td>p[-64-63] (0)
 					<tr><td>Expression Controller<td>E[0-127] (127)

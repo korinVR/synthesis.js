@@ -26,7 +26,7 @@ export default class Channel {
 		this.channelBuffer = new Float32Array(4096);
 	}
 
-	noteOn(note) {
+	noteOn(note, velocity) {
 		this.keyState[note] = true;
 
 		// stop same notes
@@ -39,13 +39,13 @@ export default class Channel {
 		// play note
 		for (let i = 0; i < VOICE_MAX; i++) {
 			if (!this.voices[i].isPlaying()) {
-				this.voices[i].play(note);
+				this.voices[i].play(note, velocity);
 				break;
 			}
 		}
 	}
 
-	noteOff(note) {
+	noteOff(note, velocity) {
 		this.keyState[note] = false;
 
 		if (this.damperPedal) {

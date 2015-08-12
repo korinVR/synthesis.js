@@ -54,6 +54,8 @@ export default class MML2SMF {
 		const OCTAVE_MAX = 10;
 		let octave = 4;
 		
+		let velocity = 100;
+		
 		let q = 6;
 		
 		let p = 0;
@@ -147,7 +149,7 @@ export default class MML2SMF {
 		}
 		
 		while (p < mml.length) {
-			if (!isNextChar("cdefgabro<>lqtvpE? \n\r\t")) {
+			if (!isNextChar("cdefgabro<>lqutvpE? \n\r\t")) {
 				error(`syntax error '${readChar()}'`);
 			}
 			let command = readChar();
@@ -178,7 +180,6 @@ export default class MML2SMF {
 					
 					let stepTime = readNoteLength();
 					let gateTime = Math.round(stepTime * q / 8);
-					let velocity = 96;
 					
 					writeDeltaTick(restTick);
 					trackData.push(0x90 | channel, note, velocity);
@@ -237,7 +238,18 @@ export default class MML2SMF {
 						if (isNextValue()) {
 							q = readValue();
 							if (q < 1 || q > 8) {
-								error("illegal q value");
+								error("q value is out of range (1-8)");
+							}
+						}
+					}
+					break;
+					
+				case "u":
+					{
+						if (isNextValue()) {
+							velocity = readValue();
+							if (velocity < 0 || velocity > 127) {
+								error("velocity value is out of range (0-127)");
 							}
 						}
 					}
@@ -269,7 +281,7 @@ export default class MML2SMF {
 						let volume = readValue();
 
 						if (volume < 0 || volume > 127) {
-							error("illegal volume");
+							error("volume value is out of range (0-127)");
 						}
 
 						writeDeltaTick(restTick);
@@ -284,7 +296,7 @@ export default class MML2SMF {
 						let pan = readValue();
 						
 						if (pan < -64 || pan > 63) {
-							error("illegal pan (-64 - 63)");
+							error("pan value is out of range (-64-63)");
 						}
 						
 						writeDeltaTick(restTick);
@@ -299,7 +311,7 @@ export default class MML2SMF {
 						let expression = readValue();
 
 						if (expression < 0 || expression > 127) {
-							error("illegal expression");
+							error("expression value is out of range (0-127)");
 						}
 
 						writeDeltaTick(restTick);

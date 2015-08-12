@@ -13,11 +13,11 @@ export default class Voice {
 		this.state = STATE_OFF; 
 	}
 	
-	play(note) {
+	play(note, velocity) {
 		this.state = STATE_SUSTAIN;
 		this.note = note;
 		this.frequency = 440 * Math.pow(2, (note - 69) / 12);
-		this.volume = 1;
+		this.volume = velocity / 127;
 		this.phase = 0;
 		
 		this.oscillator = new SquareOscillator();
