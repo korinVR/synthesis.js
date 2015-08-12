@@ -1,8 +1,11 @@
+let MML2SMF = require("MML2SMF");
+
 import Debug from "./framesynthesis/Debug";
 import Platform from "./framesynthesis/Platform";
 import Synthesizer from "./Synthesizer";
 import AudioManager from "./AudioManager";
 import VirtualKeyboard from "./VirtualKeyboard";
+import SMFPlayer from "./SMFPlayer";
 
 let synthesizer = new Synthesizer({ verbose: true });
 
@@ -53,9 +56,6 @@ function onMIDIMessage(event) {
 	
 	synthesizer.processMIDIMessage(event.data);
 }
-
-import SMFPlayer from "./SMFPlayer";
-import MML2SMF from "./MML2SMF";
 
 let smfPlayer = new SMFPlayer(synthesizer);
 

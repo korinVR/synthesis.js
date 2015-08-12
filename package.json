@@ -16,6 +16,9 @@
       "babelify"
     ]
   },
+  "dependencies": {
+    "mml2smf": "*"
+  },
   "devDependencies": {
     "browserify": "*",
     "watchify": "*", 
