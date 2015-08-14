@@ -13,7 +13,13 @@
   },
   "browserify": {
     "transform": [
-      "babelify"
+      [
+        "babelify", {
+          "blacklist": [
+            "es6.forOf"
+          ]
+        }
+      ]
     ]
   },
   "devDependencies": {

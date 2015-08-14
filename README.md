@@ -7,18 +7,14 @@ You can play it with MIDI keyboard or [MML2SMF](https://github.com/KatsuomiK/mml
 
 # Usage
 
-Requires [Babel polyfill](https://babeljs.io/docs/usage/polyfill/)
-
 ```js
-// Browser:
-<script src="browser-polyfill.min.js"></script>
+// Browser
 <script src="synthesis.min.js"></script>
-
-// Node:
+// Node
 var synthesisjs = require("synthesisjs");
 ```
 
-## Play a note (MIDI Message)
+## Process MIDI Message
 
 ```js
 var synthesizer = new synthesisjs.Synthesizer();

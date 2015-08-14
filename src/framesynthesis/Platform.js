@@ -4,10 +4,10 @@ export default class Platform {
 	}
 	
 	static isiPhone() {
-		return window.navigator.userAgent.includes("iPhone");
+		return window.navigator.userAgent.indexOf("iPhone") >= 0;
 	}
 	
 	static isiPad() {
-		return window.navigator.userAgent.includes("iPad");
+		return window.navigator.userAgent.indexOf("iPad") >= 0;
 	}
 }

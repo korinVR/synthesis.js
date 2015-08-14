@@ -71,7 +71,7 @@ var MML2SMF = (function () {
 					return false;
 				}
 				var c = mml.charAt(p);
-				return candidates.includes(c);
+				return candidates.indexOf(c) >= 0;
 			}
 
 			function readChar() {
@@ -783,60 +783,17 @@ var SMFPlayer = (function () {
 				this.currentTick += deltaTime / tickTime;
 			}
 
-			var _iteratorNormalCompletion = true;
-			var _didIteratorError = false;
-			var _iteratorError = undefined;
-
-			try {
-				for (var _iterator = this.tracks[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-					var track = _step.value;
-
-					track.update(this.currentTick, seeking);
-				}
-			} catch (err) {
-				_didIteratorError = true;
-				_iteratorError = err;
-			} finally {
-				try {
-					if (!_iteratorNormalCompletion && _iterator["return"]) {
-						_iterator["return"]();
-					}
-				} finally {
-					if (_didIteratorError) {
-						throw _iteratorError;
-					}
-				}
+			for (var i = 0; i < this.tracks.length; i++) {
+				this.tracks[i].update(this.currentTick, seeking);
 			}
 
 			// stop when all tracks finish
 			var playingTrack = 0;
-			var _iteratorNormalCompletion2 = true;
-			var _didIteratorError2 = false;
-			var _iteratorError2 = undefined;
-
-			try {
-				for (var _iterator2 = this.tracks[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-					var track = _step2.value;
-
-					if (track.finished === false) {
-						playingTrack++;
-					}
-				}
-			} catch (err) {
-				_didIteratorError2 = true;
-				_iteratorError2 = err;
-			} finally {
-				try {
-					if (!_iteratorNormalCompletion2 && _iterator2["return"]) {
-						_iterator2["return"]();
-					}
-				} finally {
-					if (_didIteratorError2) {
-						throw _iteratorError2;
-					}
+			for (var i = 0; i < this.tracks.length; i++) {
+				if (this.tracks[i].finished === false) {
+					playingTrack++;
 				}
 			}
-
 			if (playingTrack === 0) {
 				this.stop();
 			}
@@ -1283,12 +1240,12 @@ var Platform = (function () {
 	}, {
 		key: "isiPhone",
 		value: function isiPhone() {
-			return window.navigator.userAgent.includes("iPhone");
+			return window.navigator.userAgent.indexOf("iPhone") >= 0;
 		}
 	}, {
 		key: "isiPad",
 		value: function isiPad() {
-			return window.navigator.userAgent.includes("iPad");
+			return window.navigator.userAgent.indexOf("iPad") >= 0;
 		}
 	}]);
 
