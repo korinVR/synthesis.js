@@ -1,6 +1,8 @@
 # synthesis.js
 
-Work-in-progress MIDI / MML synthesizer for Chrome, Edge and iOS Safari. This library is in a very early stage. Currently it has square wave only.  
+MIDI / MML synthesizer for Chrome, Edge and iOS Safari
+
+This library is in a very early stage. Currently it has square wave only.  
 
 Working demo is at http://framesynthesis.com/experiments/synthesis.js/examples/showcase/  
 You can play it with MIDI keyboard or [MML2SMF](https://github.com/KatsuomiK/mml2smf) MMLs.
@@ -8,11 +10,7 @@ You can play it with MIDI keyboard or [MML2SMF](https://github.com/KatsuomiK/mml
 # Usage
 
 ```js
-// Browser
 <script src="synthesis.min.js"></script>
-// Node
-$ npm install synthesisjs
-var synthesisjs = require("synthesisjs");
 ```
 
 ## Process MIDI Message

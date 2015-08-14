@@ -1114,11 +1114,19 @@ var Debug = (function () {
 	_createClass(Debug, null, [{
 		key: "clear",
 		value: function clear() {
+			if (typeof document === "undefined") {
+				return;
+			}
+
 			document.getElementById("debug").innerHTML = "";
 		}
 	}, {
 		key: "log",
 		value: function log(message) {
+			if (typeof document === "undefined") {
+				return;
+			}
+
 			var element = document.getElementById("debug");
 			if (element) {
 				var div = document.createElement("div");
@@ -1240,11 +1248,19 @@ var Platform = (function () {
 	}, {
 		key: "isiPhone",
 		value: function isiPhone() {
+			if (typeof document === "undefined") {
+				return false;
+			}
+
 			return window.navigator.userAgent.indexOf("iPhone") >= 0;
 		}
 	}, {
 		key: "isiPad",
 		value: function isiPad() {
+			if (typeof document === "undefined") {
+				return false;
+			}
+
 			return window.navigator.userAgent.indexOf("iPad") >= 0;
 		}
 	}]);

@@ -1,9 +1,17 @@
 export default class Debug {
 	static clear() {
+		if (typeof document === "undefined") {
+			return;
+		}
+
 		document.getElementById("debug").innerHTML = "";
 	}
 	
 	static log(message) {
+		if (typeof document === "undefined") {
+			return;
+		}
+
 		let element = document.getElementById("debug");
 		if (element) {
 			let div = document.createElement("div");

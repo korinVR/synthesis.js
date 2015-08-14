@@ -1,8 +1,8 @@
 {
   "name": "synthesisjs",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
-  "main": "src/main.js",
+  "main": "build/synthesis.js",
   "author": "Katsuomi Kobayashi",
   "repository": "https://github.com/KatsuomiK/synthesis.js",
   "homepage": "http://framesynthesis.com/",
