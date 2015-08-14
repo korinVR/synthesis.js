@@ -11,6 +11,7 @@ You can play it with MIDI keyboard or [MML2SMF](https://github.com/KatsuomiK/mml
 // Browser
 <script src="synthesis.min.js"></script>
 // Node
+$ npm install synthesisjs
 var synthesisjs = require("synthesisjs");
 ```
 
