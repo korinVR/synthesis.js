@@ -2,10 +2,8 @@
 
 MIDI / MML synthesizer for Chrome, Edge and iOS Safari
 
-This library is in a very early stage. Currently it has square wave only.  
-
-Working demo is at http://framesynthesis.com/experiments/synthesis.js/examples/showcase/  
-You can play it with MIDI keyboard or [MML2SMF](https://github.com/KatsuomiK/mml2smf) MMLs.
+**This library is in a very early stage.** Currently it has square wave only.   
+Working demo is [available here](http://framesynthesis.com/experiments/synthesis.js/examples/showcase/). You can play it with MIDI keyboard or [MML2SMF](https://github.com/KatsuomiK/mml2smf) MMLs.
 
 # Usage
 
