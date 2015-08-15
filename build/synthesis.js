@@ -155,7 +155,7 @@ var MML2SMF = (function () {
 			}
 
 			while (p < mml.length) {
-				if (!isNextChar("cdefgabro<>lqutvpE? \n\r\t")) {
+				if (!isNextChar("cdefgabro<>lqutvpEBD@? \n\r\t")) {
 					error("syntax error '" + readChar() + "'");
 				}
 				var command = readChar();
@@ -320,6 +320,61 @@ var MML2SMF = (function () {
 							writeDeltaTick(restTick);
 							trackData.push(0xb0 | channel, 11, expression);
 						}
+						break;
+
+					case "B":
+						if (!isNextValue()) {
+							error("no parameter");
+						}
+						var controlNumber = readValue();
+
+						if (!isNextChar(",")) {
+							error("control change requires two parameter");
+						}
+						readChar();
+
+						if (!isNextValue()) {
+							error("no value");
+						}
+						var value = readValue();
+
+						if (controlNumber < 0 || controlNumber > 119) {
+							error("control number is out of range (0-119)");
+						}
+						if (value < 0 || value > 127) {
+							error("controller value is out of range (0-127)");
+						}
+
+						writeDeltaTick(restTick);
+						trackData.push(0xb0 | channel, controlNumber, value);
+						break;
+
+					case "@":
+						if (!isNextValue()) {
+							error("no program number");
+						}
+						var programNumber = readValue();
+
+						if (programNumber < 0 || programNumber > 127) {
+							error("illegal program number (0-127)");
+						}
+
+						writeDeltaTick(restTick);
+						trackData.push(0xc0 | channel, programNumber);
+						break;
+
+					case "D":
+						if (!isNextValue()) {
+							error("no pressure value");
+						}
+						var pressure = readValue();
+
+						if (pressure < 0 || pressure > 127) {
+							error("illegal pressure number (0-127)");
+						}
+
+						writeDeltaTick(restTick);
+						trackData.push(0xd0 | channel, pressure);
 						break;
 
 					case "?":
@@ -530,6 +585,9 @@ var Channel = (function () {
 			}
 		}
 	}, {
+		key: "programChange",
+		value: function programChange(programNumber) {}
+	}, {
 		key: "setPitchBend",
 		value: function setPitchBend(bend) {
 			this.pitchBend = bend * 2 / 8192;
@@ -619,6 +677,7 @@ var Track = (function () {
 			while (this.nextEventTick < currentTick) {
 				// send MIDI message
 				var statusByte = this.readByte();
+				var statusUpper4bits = statusByte >> 4;
 
 				if (statusByte === 0xff) {
 					// meta event
@@ -634,14 +693,32 @@ var Track = (function () {
 					} else {
 						this.pos += _length;
 					}
-				} else {
-					// MIDI event
-					var dataByte1 = this.readByte();
-					var dataByte2 = this.readByte();
+				}
 
-					if (seeking && (statusByte >> 4 == 0x9 || statusByte >> 4 == 0x8)) {} else {
-						this.player.synthesizer.processMIDIMessage([statusByte, dataByte1, dataByte2]);
-					}
+				switch (statusUpper4bits) {
+					// 3 bytes message
+					case 0x8:
+					case 0x9:
+					case 0xa:
+					case 0xb:
+					case 0xe:
+						{
+							var dataByte1 = this.readByte();
+							var dataByte2 = this.readByte();
+
+							if (seeking && (statusUpper4bits === 0x8 || statusUpper4bits === 0x9)) {} else {
+								this.player.synthesizer.processMIDIMessage([statusByte, dataByte1, dataByte2]);
+							}
+							break;
+						}
+					// 2 bytes message
+					case 0xc:
+					case 0xd:
+						{
+							var dataByte1 = this.readByte();
+							this.player.synthesizer.processMIDIMessage([statusByte, dataByte1]);
+							break;
+						}
 				}
 
 				if (this.pos >= this.endPos) {
@@ -806,7 +883,7 @@ var SMFPlayer = (function () {
 exports["default"] = SMFPlayer;
 module.exports = exports["default"];
 
-// disable Note On/Off when seeking
+// skip note on/off when seeking
 
 },{}],5:[function(require,module,exports){
 "use strict";
@@ -894,14 +971,14 @@ var Synthesizer = (function () {
 				return;
 			}
 
-			if (data.length < 3) {
-				return;
-			}
-
 			// avoid iOS audio restriction
 			this.createAudioManager();
 
 			var statusByte = data[0];
+			if (!statusByte) {
+				return;
+			}
+
 			var statusUpper4bits = statusByte >> 4;
 			var channel = statusByte & 0xf;
 			var midiChannel = channel + 1;
@@ -919,6 +996,13 @@ var Synthesizer = (function () {
 
 				this.log("Ch. " + midiChannel + " Note Off note: " + note + " velocity: " + velocity);
 				this.channels[channel].noteOff(note, velocity);
+			}
+
+			if (statusUpper4bits === 0xc) {
+				var programNumber = data[1];
+
+				this.log("Ch. " + midiChannel + " Program Change: " + programNumber);
+				this.channels[channel].programChange(programNumber);
 			}
 
 			if (statusUpper4bits === 0xe) {

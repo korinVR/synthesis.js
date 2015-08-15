@@ -81,6 +81,9 @@ export default class Channel {
 			}
 		}
 	}
+	
+	programChange(programNumber) {
+	}
 
 	setPitchBend(bend) {
 		this.pitchBend = bend * 2 / 8192;

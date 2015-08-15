@@ -20,6 +20,7 @@ class Track {
 		while (this.nextEventTick < currentTick) {
 			// send MIDI message
 			let statusByte = this.readByte();
+			let statusUpper4bits = statusByte >> 4;
 			
 			if (statusByte === 0xff) {
 				// meta event
@@ -35,16 +36,34 @@ class Track {
 				} else {
 					this.pos += length;
 				}
-			} else {
-				// MIDI event
-				let dataByte1 = this.readByte();
-				let dataByte2 = this.readByte();
-				
-				if (seeking && ((statusByte >> 4) == 0x9 || ((statusByte >> 4) == 0x8))) {
-					// disable Note On/Off when seeking
-				} else {
-					this.player.synthesizer.processMIDIMessage([statusByte, dataByte1, dataByte2]);
-				}
+			}
+			
+			switch (statusUpper4bits) {
+				// 3 bytes message
+				case 0x8:
+				case 0x9:
+				case 0xa:
+				case 0xb:
+				case 0xe:
+					{
+						let dataByte1 = this.readByte();
+						let dataByte2 = this.readByte();
+
+						if (seeking && (statusUpper4bits === 0x8 || statusUpper4bits === 0x9)) {
+							// skip note on/off when seeking
+						} else {
+							this.player.synthesizer.processMIDIMessage([statusByte, dataByte1, dataByte2]);
+						}
+						break;
+					}
+				// 2 bytes message
+				case 0xc:
+				case 0xd:
+					{
+						let dataByte1 = this.readByte();
+						this.player.synthesizer.processMIDIMessage([statusByte, dataByte1]);
+						break;
+					}
 			}
 
 			if (this.pos >= this.endPos) {

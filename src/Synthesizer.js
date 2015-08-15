@@ -53,18 +53,18 @@ export default class Synthesizer {
 			return;
 		}
 		
-		if (data.length < 3) {
-			return;
-		}
-		
 		// avoid iOS audio restriction
 		this.createAudioManager();
 		
 		let statusByte = data[0];
+		if (!statusByte) {
+			return;
+		}
+		
 		let statusUpper4bits = statusByte >> 4;
 		let channel = statusByte & 0xf;
 		let midiChannel = channel + 1;
-
+		
 		if (statusUpper4bits === 0x9) {
 			let note = data[1];
 			let velocity = data[2];
@@ -78,6 +78,13 @@ export default class Synthesizer {
 
 			this.log(`Ch. ${midiChannel} Note Off note: ${note} velocity: ${velocity}`);
 			this.channels[channel].noteOff(note, velocity);
+		}
+		
+		if (statusUpper4bits === 0xc) {
+			let programNumber = data[1];
+
+			this.log(`Ch. ${midiChannel} Program Change: ${programNumber}`);
+			this.channels[channel].programChange(programNumber);
 		}
 		
 		if (statusUpper4bits === 0xe) {
