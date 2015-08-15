@@ -54,7 +54,12 @@ class Track {
 				}
 				this.player.synthesizer.processMIDIMessage(systemExclusive);
 			}
-			
+
+			// skip unsupported 2 bytes messages
+			if (statusByte === 0xf1 || statusByte === 0xf2 || statusByte === 0xf3) {
+				this.readByte();
+			}
+
 			switch (statusUpper4bits) {
 				// 3 bytes message
 				case 0x8:
