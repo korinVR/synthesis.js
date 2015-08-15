@@ -22,9 +22,8 @@ class Track {
 			let statusByte = this.readByte();
 			let statusUpper4bits = statusByte >> 4;
 			
+			// meta event
 			if (statusByte === 0xff) {
-				// meta event
-				
 				let metaEventType = this.readByte();
 				let length = this.readByte();
 
@@ -36,6 +35,24 @@ class Track {
 				} else {
 					this.pos += length;
 				}
+			}
+			
+			// system exclusive message
+			if (statusByte === 0xf0) {
+				let systemExclusive = [statusByte];
+				
+				while (true) {
+					if (this.pos >= this.endPos) {
+						throw Error("illegal system exlusive message");
+					}
+					
+					let byte = this.readByte();
+					if (byte === 0xf7) {
+						break;
+					}
+					systemExclusive.push(byte);
+				}
+				this.player.synthesizer.processMIDIMessage(systemExclusive);
 			}
 			
 			switch (statusUpper4bits) {
