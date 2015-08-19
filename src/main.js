@@ -1,8 +1,7 @@
-import mml2smf from "MML2SMF";
+import _mml2smf from "mml2smf";
 import synthesizer from "./Synthesizer";
 import smfPlayer from "./SMFPlayer";
 
-export var MML2SMF = mml2smf;
+export var mml2smf = _mml2smf;
 export var Synthesizer = synthesizer;
 export var SMFPlayer = smfPlayer;
-

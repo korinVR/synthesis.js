@@ -81,14 +81,13 @@ window.playSMF = playSMF;
 window.stopSMF = stopSMF;
 
 function playMML() {
-	let mml2smf = new synthesisjs.MML2SMF();
 	let mml = document.getElementById("mml").value;
 	Debug.log("Convert MML: " + mml);
 	try {
-		let smf = mml2smf.convert(mml);
-		let startTick = mml2smf.getStartTick();
+		let opts = {};
+		let smf = synthesisjs.mml2smf(mml, opts);
 		Debug.log("Play SMF");
-		smfPlayer.play(smf, startTick);
+		smfPlayer.play(smf, opts.startTick);
 	} catch (e) {
 		Debug.log(e.message);
 	}

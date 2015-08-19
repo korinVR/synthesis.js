@@ -30,8 +30,7 @@ setTimeout(function() {
 ## Play MML
 
 ```js
-var mml2smf = new synthesisjs.MML2SMF();
-var smf = mml2smf.convert("t150l8 g4gagrfrerfrg2");
+var smf = synthesisjs.mml2smf("t150l8 g4gagrfrerfrg2");
 
 var synthesizer = new synthesisjs.Synthesizer();
 var smfPlayer = new synthesisjs.SMFPlayer(synthesizer);
