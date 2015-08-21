@@ -21,18 +21,31 @@ function mml2smf(mml, opts) {
 		throw new Error("over 16 tracks");
 	}
 
-	var smfFormat = trackNum === 1 ? 0 : 1;
+	var format = trackNum > 1 ? 1 : 0;
 
-	var smf = [0x4d, 0x54, 0x68, 0x64, 0x00, 0x00, 0x00, 0x06, 0x00, smfFormat, trackNum >> 8 & 0xff, trackNum & 0xff, timebase >> 8 & 0xff, timebase & 0xff];
+	var smf = [0x4d, 0x54, 0x68, 0x64];
+
+	function pushUint16(value) {
+		smf.push(value >> 8 & 0xff, value & 0xff);
+	}
+
+	function pushUint32(value) {
+		smf.push(value >> 24 & 0xff, value >> 16 & 0xff, value >> 8 & 0xff, value & 0xff);
+	}
+
+	pushUint32(6);
+	pushUint16(format);
+	pushUint16(trackNum);
+	pushUint16(timebase);
 
 	var channel = 0;
 
 	for (var i = 0; i < trackNum; i++) {
 		var trackData = createTrackData(trackMMLs[i]);
 
-		var trackHeader = [0x4d, 0x54, 0x72, 0x6b, trackData.length >> 24 & 0xff, trackData.length >> 16 & 0xff, trackData.length >> 8 & 0xff, trackData.length & 0xff];
-
-		smf = smf.concat(trackHeader, trackData);
+		smf.push(0x4d, 0x54, 0x72, 0x6b);
+		pushUint32(trackData.length);
+		smf = smf.concat(trackData);
 		channel++;
 
 		if (channel > 15) {
@@ -1446,26 +1459,19 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _interopRequire(obj) { return obj && obj.__esModule ? obj["default"] : obj; }
 
-var _mml2smf2 = require("mml2smf");
+var _mml2smf = require("mml2smf");
 
-var _mml2smf3 = _interopRequireDefault(_mml2smf2);
+exports.mml2smf = _interopRequire(_mml2smf);
 
 var _Synthesizer = require("./Synthesizer");
 
-var _Synthesizer2 = _interopRequireDefault(_Synthesizer);
+exports.Synthesizer = _interopRequire(_Synthesizer);
 
 var _SMFPlayer = require("./SMFPlayer");
 
-var _SMFPlayer2 = _interopRequireDefault(_SMFPlayer);
-
-var mml2smf = _mml2smf3["default"];
-exports.mml2smf = mml2smf;
-var Synthesizer = _Synthesizer2["default"];
-exports.Synthesizer = Synthesizer;
-var SMFPlayer = _SMFPlayer2["default"];
-exports.SMFPlayer = SMFPlayer;
+exports.SMFPlayer = _interopRequire(_SMFPlayer);
 
 },{"./SMFPlayer":4,"./Synthesizer":5,"mml2smf":1}],11:[function(require,module,exports){
 "use strict";
