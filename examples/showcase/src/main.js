@@ -101,8 +101,26 @@ function tweetMML() {
 	window.open(url, "_blank");
 }
 
+function downloadMIDIFile(filename) {
+	let mml = document.getElementById("mml").value;
+	try {
+		let smf = synthesisjs.mml2smf(mml);
+		
+		let blob = new Blob([smf], { type: "application/x-midi" });
+		
+		let a = document.createElement("a");
+		a.href = URL.createObjectURL(blob);
+		a.target = "_blank";
+		a.download = filename;
+		a.click();
+	} catch (e) {
+		Debug.log(e.message);
+	}
+}
+
 window.playMML = playMML;
 window.tweetMML = tweetMML;
+window.downloadMIDIFile = downloadMIDIFile;
 
 function synthesizerReset() {
 	synthesizer.reset();
