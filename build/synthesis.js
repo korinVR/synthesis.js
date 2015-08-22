@@ -25,18 +25,18 @@ function mml2smf(mml, opts) {
 
 	var smf = [0x4d, 0x54, 0x68, 0x64];
 
-	function pushUint16(value) {
+	function write2bytes(value) {
 		smf.push(value >> 8 & 0xff, value & 0xff);
 	}
 
-	function pushUint32(value) {
+	function write4bytes(value) {
 		smf.push(value >> 24 & 0xff, value >> 16 & 0xff, value >> 8 & 0xff, value & 0xff);
 	}
 
-	pushUint32(6);
-	pushUint16(format);
-	pushUint16(trackNum);
-	pushUint16(timebase);
+	write4bytes(6);
+	write2bytes(format);
+	write2bytes(trackNum);
+	write2bytes(timebase);
 
 	var channel = 0;
 
@@ -44,7 +44,7 @@ function mml2smf(mml, opts) {
 		var trackData = createTrackData(trackMMLs[i]);
 
 		smf.push(0x4d, 0x54, 0x72, 0x6b);
-		pushUint32(trackData.length);
+		write4bytes(trackData.length);
 		smf = smf.concat(trackData);
 		channel++;
 
@@ -79,12 +79,18 @@ function mml2smf(mml, opts) {
 		var keyShift = 0;
 
 		var p = 0;
+		// error column
+		var colError = 0;
+
+		function peekChar() {
+			return mml.charAt(p);
+		}
 
 		function isNextChar(candidates) {
 			if (p >= mml.length) {
 				return false;
 			}
-			var c = mml.charAt(p);
+			var c = peekChar();
 			return candidates.indexOf(c) >= 0;
 		}
 
@@ -118,6 +124,14 @@ function mml2smf(mml, opts) {
 			return parseInt(s);
 		}
 
+		function write() {
+			for (var _len = arguments.length, data = Array(_len), _key = 0; _key < _len; _key++) {
+				data[_key] = arguments[_key];
+			}
+
+			trackData = trackData.concat(data);
+		}
+
 		function readNoteLength() {
 			var totalStepTime = 0;
 
@@ -147,7 +161,7 @@ function mml2smf(mml, opts) {
 		}
 
 		function error(message) {
-			throw new Error("char " + p + " : " + message);
+			throw new Error("col " + (colError + 1) + " : " + message);
 		}
 
 		function writeDeltaTick(tick) {
@@ -168,11 +182,12 @@ function mml2smf(mml, opts) {
 				if (stack.length > 0) {
 					b |= 0x80;
 				}
-				trackData.push(b);
+				write(b);
 			}
 		}
 
 		while (p < mml.length) {
+			colError = p;
 			if (!isNextChar("cdefgabro<>lqutvpkEBD@C?/ \n\r\t")) {
 				error("syntax error '" + readChar() + "'");
 			}
@@ -210,9 +225,9 @@ function mml2smf(mml, opts) {
 					var gateTime = Math.round(stepTime * q / 8);
 
 					writeDeltaTick(restTick);
-					trackData.push(0x90 | channel, note, velocity);
+					write(0x90 | channel, note, velocity);
 					writeDeltaTick(gateTime);
-					trackData.push(0x80 | channel, note, 0);
+					write(0x80 | channel, note, 0);
 					restTick = stepTime - gateTime;
 
 					currentTick += stepTime;
@@ -228,6 +243,7 @@ function mml2smf(mml, opts) {
 					break;
 
 				case "o":
+					colError = p;
 					if (!isNextValue()) {
 						error("no octave number");
 					} else {
@@ -263,6 +279,7 @@ function mml2smf(mml, opts) {
 
 				case "q":
 					{
+						colError = p;
 						if (isNextValue()) {
 							q = readValue();
 							if (q < 1 || q > 8) {
@@ -274,6 +291,7 @@ function mml2smf(mml, opts) {
 
 				case "u":
 					{
+						colError = p;
 						if (isNextValue()) {
 							velocity = readValue();
 							if (velocity < 0 || velocity > 127) {
@@ -284,6 +302,7 @@ function mml2smf(mml, opts) {
 					break;
 
 				case "t":
+					colError = p;
 					if (!isNextValue()) {
 						error("no tempo number");
 					} else {
@@ -295,11 +314,12 @@ function mml2smf(mml, opts) {
 						}
 
 						writeDeltaTick(restTick);
-						trackData.push(0xff, 0x51, 0x03, quarterMicroseconds >> 16 & 0xff, quarterMicroseconds >> 8 & 0xff, quarterMicroseconds & 0xff);
+						write(0xff, 0x51, 0x03, quarterMicroseconds >> 16 & 0xff, quarterMicroseconds >> 8 & 0xff, quarterMicroseconds & 0xff);
 					}
 					break;
 
 				case "v":
+					colError = p;
 					if (!isNextValue()) {
 						error("no volume value");
 					} else {
@@ -310,11 +330,12 @@ function mml2smf(mml, opts) {
 						}
 
 						writeDeltaTick(restTick);
-						trackData.push(0xb0 | channel, 7, volume);
+						write(0xb0 | channel, 7, volume);
 					}
 					break;
 
 				case "p":
+					colError = p;
 					if (!isNextValue()) {
 						error("no panpot value");
 					} else {
@@ -325,11 +346,12 @@ function mml2smf(mml, opts) {
 						}
 
 						writeDeltaTick(restTick);
-						trackData.push(0xb0 | channel, 10, pan + 64);
+						write(0xb0 | channel, 10, pan + 64);
 					}
 					break;
 
 				case "E":
+					colError = p;
 					if (!isNextValue()) {
 						error("no expression value");
 					} else {
@@ -340,68 +362,70 @@ function mml2smf(mml, opts) {
 						}
 
 						writeDeltaTick(restTick);
-						trackData.push(0xb0 | channel, 11, expression);
+						write(0xb0 | channel, 11, expression);
 					}
 					break;
 
 				case "B":
 					{
+						colError = p;
 						if (!isNextValue()) {
 							error("no parameter");
 						}
 						var controlNumber = readValue();
+						if (controlNumber < 0 || controlNumber > 119) {
+							error("control number is out of range (0-119)");
+						}
 
+						colError = p;
 						if (!isNextChar(",")) {
 							error("control change requires two parameter");
 						}
 						readChar();
 
+						colError = p;
 						if (!isNextValue()) {
 							error("no value");
 						}
 						var value = readValue();
-
-						if (controlNumber < 0 || controlNumber > 119) {
-							error("control number is out of range (0-119)");
-						}
 						if (value < 0 || value > 127) {
 							error("controller value is out of range (0-127)");
 						}
 
 						writeDeltaTick(restTick);
-						trackData.push(0xb0 | channel, controlNumber, value);
+						write(0xb0 | channel, controlNumber, value);
 						break;
 					}
 
 				case "@":
 					{
+						colError = p;
 						if (!isNextValue()) {
 							error("no program number");
 						}
 						var programNumber = readValue();
-
 						if (programNumber < 0 || programNumber > 127) {
 							error("illegal program number (0-127)");
 						}
 
 						writeDeltaTick(restTick);
-						trackData.push(0xc0 | channel, programNumber);
+						write(0xc0 | channel, programNumber);
 						break;
 					}
 
 				case "D":
 					{
+						colError = p;
 						if (!isNextValue()) {
 							error("no pressure value");
 						}
 						var pressure = readValue();
-
 						if (pressure < 0 || pressure > 127) {
 							error("illegal pressure number (0-127)");
 						}
 
 						writeDeltaTick(restTick);
-						trackData.push(0xd0 | channel, pressure);
+						write(0xd0 | channel, pressure);
 						break;
 					}
 
@@ -412,11 +436,11 @@ function mml2smf(mml, opts) {
 
 				case "k":
 					{
+						colError = p;
 						if (!isNextValue()) {
 							error("no key shift value");
 						}
 						keyShift = readValue();
-
 						if (keyShift < -127 || keyShift > 127) {
 							error("illegal key shift value (-127-127)");
 						}
@@ -425,11 +449,11 @@ function mml2smf(mml, opts) {
 
 				case "C":
 					{
+						colError = p;
 						if (!isNextValue()) {
 							error("no channel number");
 						}
 						var midiChannel = readValue();
-
 						if (midiChannel < 1 || midiChannel > 16) {
 							error("illegal MIDI channel (1-16)");
 						}
@@ -440,6 +464,7 @@ function mml2smf(mml, opts) {
 				case "/":
 					// comment
 					{
+						colError = p - 1;
 						if (isNextChar("*")) {
 							readChar();
 
@@ -461,6 +486,7 @@ function mml2smf(mml, opts) {
 								readChar();
 							}
 						} else {
+							colError = p;
 							error("syntax error");
 						}
 						break;
