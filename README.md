@@ -17,13 +17,13 @@ Working demo is [available here](http://framesynthesis.com/experiments/synthesis
 var synthesizer = new synthesisjs.Synthesizer();
 
 setTimeout(function() {
-	// Note On
-	synthesizer.processMIDIMessage([0x90, 60, 100]);
+    // Note On
+    synthesizer.processMIDIMessage([0x90, 60, 100]);
 }, 1000);
 
 setTimeout(function() {
-	// Note off
-	synthesizer.processMIDIMessage([0x80, 60, 100]);
+    // Note off
+    synthesizer.processMIDIMessage([0x80, 60, 100]);
 }, 2000);
 ```
 
@@ -63,5 +63,5 @@ MIT
 
 Katsuomi Kobayashi ([@KatsuomiK](https://twitter.com/KatsuomiK) / [@k0rin](https://twitter.com/k0rin))
 
-http://framesynthesis.com/
+https://framesynthesis.com/
 

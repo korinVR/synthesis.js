@@ -21,10 +21,11 @@
     "mml2smf": "0.0.11"
   },
   "devDependencies": {
-    "browserify": "*",
-    "watchify": "*", 
+    "babel-preset-es2015": "^6.24.1",
     "babelify": "*",
+    "browserify": "*",
+    "mocha": "*",
     "uglifyjs": "*",
-    "mocha": "*"
+    "watchify": "*"
   }
 }

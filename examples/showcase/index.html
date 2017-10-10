@@ -1,180 +1,180 @@
 <!DOCTYPE html>
 <head>
-	<meta name="viewport" content="initial-scale=1,user-scalable=no">
-	<title>synthesis.js - MIDI / MML Synthesizer</title>
-	<style>
-		body {
-		    background-color: #F8F8F8;
-			font-family: 'Helvetica-Light', Arial, Meiryo, sans-serif;
-			line-height: 1.5;
-			margin: 0;
-		}
+    <meta name="viewport" content="initial-scale=1,user-scalable=no">
+    <title>synthesis.js - MIDI / MML Synthesizer</title>
+    <style>
+        body {
+            background-color: #F8F8F8;
+            font-family: 'Helvetica-Light', Arial, Meiryo, sans-serif;
+            line-height: 1.5;
+            margin: 0;
+        }
 
-		.container {
-			max-width: 800px;
-			margin: 0 auto;
-			background-color: #FFF;
-			box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-		}
-		
-		#debug {
-			width: calc(100% - 2em);
-			height: 20em;
-			margin: 0;
-			padding: 1em 1em;
-			
-			color: #4CF;
-			background-color: #003;
-			font-family: monospace;
-			
-			line-height: 1;
-			overflow: hidden;
-		}
-		
-		h1, h2 {
-			margin-top: 0;
-			margin-bottom: 8px;
-		}
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #FFF;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        }
+        
+        #debug {
+            width: calc(100% - 2em);
+            height: 20em;
+            margin: 0;
+            padding: 1em 1em;
+            
+            color: #4CF;
+            background-color: #003;
+            font-family: monospace;
+            
+            line-height: 1;
+            overflow: hidden;
+        }
+        
+        h1, h2 {
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
 
-		button {
-		    background: #444;
-		    border: none;
-			
-			color: #FFF;
-			margin: 10px 0;
-			padding: 10px;
-			
-			border-radius: 5px;
-			box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-		}
-		
-		textarea {
-			font-family: monospace;
-			word-wrap: break-word;
-			font-size: 16px;
-		}
+        button {
+            background: #444;
+            border: none;
+            
+            color: #FFF;
+            margin: 10px 0;
+            padding: 10px;
+            
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        textarea {
+            font-family: monospace;
+            word-wrap: break-word;
+            font-size: 16px;
+        }
 
-		header {
-			padding: 1em 1.5em;
-		}
-		
-		.rack {
-			padding: 1em 1.5em;
-		}
-		
-		.instruction {
-			padding: 1em;
-			margin: 10px 0;
-			background-color: rgba(255, 255, 255, 0.2);
-		}
-		
-		.instruction h3 {
-			margin-top: 0;
-		}
-		
-		#synthesizer {
-			background-color: #8CF;
-		}
-		
-		#smf-player {
-			background-color: #EEE;
-		}
-		
-		#mml2smf {
-			background-color: #DDD;
-		}
-		
-		#virtual-keyboard {
-			display: none;
-			background-color: #EEE;
-		}
-		
-		#keyboard {
-			width: 100%;
-			height: 120px;
-			overflow: hidden;
-		}
-	</style>
+        header {
+            padding: 1em 1.5em;
+        }
+        
+        .rack {
+            padding: 1em 1.5em;
+        }
+        
+        .instruction {
+            padding: 1em;
+            margin: 10px 0;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .instruction h3 {
+            margin-top: 0;
+        }
+        
+        #synthesizer {
+            background-color: #8CF;
+        }
+        
+        #smf-player {
+            background-color: #EEE;
+        }
+        
+        #mml2smf {
+            background-color: #DDD;
+        }
+        
+        #virtual-keyboard {
+            display: none;
+            background-color: #EEE;
+        }
+        
+        #keyboard {
+            width: 100%;
+            height: 120px;
+            overflow: hidden;
+        }
+    </style>
 </head>
 <body>
-	<div class="container">
-		<a href="https://github.com/KatsuomiK/synthesis.js"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
-		
-		<header>
-			<h1>synthesis.js - MIDI / MML Synthesizer (WIP)</h1>
-			<p>Web Audio API and Web MIDI API experiment works on Chrome, Edge and iOS Safari.<br>
-			The features are very limited for now. Currently you can:</p>
-			<p>- play with MIDI keyboard<br>
-			- play with PC keys (C key = C4, Space = Damper pedal)<br>
-			- play simple MML<br>
-			- play test SMF</p>
-		</header>
-		
-		<pre id="debug"></pre>
-		
-		<div class="rack" id="virtual-keyboard">
-			<h2>Keyboard (N/A)</h2>
-			<div id="keyboard">
-			</div>
-		</div>
-		
-		<div class="rack" id="mml2smf">
-			<h2>MML2SMF</h2>
-			<textarea id="mml" type="text" spellcheck="false" style="width: 100%" rows="8" wrap="off">t140 o5l8q7 ccggaag4 ffeeddc4; o4l8 cgegcgeg >b<gfg>b<gc4</textarea><br>
-			<button onclick="playMML();">Play</button> <!--button onclick="tweetMML();">Tweet MML</button--> <button onclick="downloadMIDIFile('mml2smf.mid');">Download MIDI File</button>
-			
-			<div class="instruction">
-				<h3>MML Commands</h3>
-				<table style="border-spacing: 20px 0;">
-					<tr><td>Notes<td>c, d, e, f, g, a, b, +, -
-					<tr><td>Octave<td>o[octave], &lt;, &gt; (4)
-					<tr><td>Note Length<td>l[note length] (4)
-					<tr><td>Tempo<td>t[tempo] (120)
-					<tr><td>Gate Time<td>q[1-8] (6)
-					<tr><td>Velocity<td>u[0-127] (100)
-					<tr><td>Channel Volume<td>v[0-127] (100)
-					<tr><td>Pan<td>p[-64-63] (0)
-					<tr><td>Expression Controller<td>E[0-127] (127)
-					<tr><td>Key Shift<td>k[-127-127] (0)
-					<tr><td>Set MIDI Channel<td>C[1-16] (1)
-					<tr><td>Next Track and MIDI Channel<td>;
-					<tr><td>Tie<td>^
-					<tr><td>Play from Here<td>?
-					<tr><td>Comment<td>//..., /*...*/
-				</table>
-			</div>
-		</div>
-		
-		<div class="rack" id="smf-player">
-			<h2>SMF Player</h2>
-			<button onclick="playSMF();">Play test SMF</button> <button onclick="stopSMF();">Stop</button>
-		</div>
-		
-		<div class="rack" id="synthesizer">
-			<h2>Synthesizer</h2>
-			<button onclick="synthesizerReset();">Reset</button>
-			
-			<div class="instruction">
-				<h3>MIDI Implementation Chart</h3>
-				<dl>
-					<dt>MIDI Input (Ch. 1-16)
-					<dd>
-					<p>Note On/Off<br>
-					Pitch Bend<br>
-					CC 1 (Modulation Wheel)<br>
-					CC 7 (Channel Volume)<br>
-					CC 10 (Pan)<br>
-					CC 11 (Expression Controller)<br>
-					CC 64 (Damper Pedal On/Off)<br>
-					CC 123 (All Notes Off)<br>
-				</dl>
-			</div>
-		</div>
-		
-		<div class="instruction">
-			<p>Programmed by Katsuomi Kobayashi (<a href="https://twitter.com/KatsuomiK">@KatsuomiK</a> / <a href="https://twitter.com/k0rin">@k0rin</a> in Japanese)</p>
-		</div>
-	</div>
+    <div class="container">
+        <a href="https://github.com/KatsuomiK/synthesis.js"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+        
+        <header>
+            <h1>synthesis.js - MIDI / MML Synthesizer (WIP)</h1>
+            <p>Web Audio API and Web MIDI API experiment works on Chrome, Edge and iOS Safari.<br>
+            The features are very limited for now. Currently you can:</p>
+            <p>- play with MIDI keyboard<br>
+            - play with PC keys (C key = C4, Space = Damper pedal)<br>
+            - play simple MML<br>
+            - play test SMF</p>
+        </header>
+        
+        <pre id="debug"></pre>
+        
+        <div class="rack" id="virtual-keyboard">
+            <h2>Keyboard (N/A)</h2>
+            <div id="keyboard">
+            </div>
+        </div>
+        
+        <div class="rack" id="mml2smf">
+            <h2>MML2SMF</h2>
+            <textarea id="mml" type="text" spellcheck="false" style="width: 100%" rows="8" wrap="off">t140 o5l8q7 ccggaag4 ffeeddc4; o4l8 cgegcgeg >b<gfg>b<gc4</textarea><br>
+            <button onclick="playMML();">Play</button> <!--button onclick="tweetMML();">Tweet MML</button--> <button onclick="downloadMIDIFile('mml2smf.mid');">Download MIDI File</button>
+            
+            <div class="instruction">
+                <h3>MML Commands</h3>
+                <table style="border-spacing: 20px 0;">
+                    <tr><td>Notes<td>c, d, e, f, g, a, b, +, -
+                    <tr><td>Octave<td>o[octave], &lt;, &gt; (4)
+                    <tr><td>Note Length<td>l[note length] (4)
+                    <tr><td>Tempo<td>t[tempo] (120)
+                    <tr><td>Gate Time<td>q[1-8] (6)
+                    <tr><td>Velocity<td>u[0-127] (100)
+                    <tr><td>Channel Volume<td>v[0-127] (100)
+                    <tr><td>Pan<td>p[-64-63] (0)
+                    <tr><td>Expression Controller<td>E[0-127] (127)
+                    <tr><td>Key Shift<td>k[-127-127] (0)
+                    <tr><td>Set MIDI Channel<td>C[1-16] (1)
+                    <tr><td>Next Track and MIDI Channel<td>;
+                    <tr><td>Tie<td>^
+                    <tr><td>Play from Here<td>?
+                    <tr><td>Comment<td>//..., /*...*/
+                </table>
+            </div>
+        </div>
+        
+        <div class="rack" id="smf-player">
+            <h2>SMF Player</h2>
+            <button onclick="playSMF();">Play test SMF</button> <button onclick="stopSMF();">Stop</button>
+        </div>
+        
+        <div class="rack" id="synthesizer">
+            <h2>Synthesizer</h2>
+            <button onclick="synthesizerReset();">Reset</button>
+            
+            <div class="instruction">
+                <h3>MIDI Implementation Chart</h3>
+                <dl>
+                    <dt>MIDI Input (Ch. 1-16)
+                    <dd>
+                    <p>Note On/Off<br>
+                    Pitch Bend<br>
+                    CC 1 (Modulation Wheel)<br>
+                    CC 7 (Channel Volume)<br>
+                    CC 10 (Pan)<br>
+                    CC 11 (Expression Controller)<br>
+                    CC 64 (Damper Pedal On/Off)<br>
+                    CC 123 (All Notes Off)<br>
+                </dl>
+            </div>
+        </div>
+        
+        <div class="instruction">
+            <p>Programmed by Katsuomi Kobayashi (<a href="https://twitter.com/KatsuomiK">@KatsuomiK</a> / <a href="https://twitter.com/k0rin">@k0rin</a> in Japanese)</p>
+        </div>
+    </div>
 </body>
 
 <script src="../../build/synthesis.js"></script>
