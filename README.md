@@ -3,18 +3,18 @@
 MIDI / MML synthesizer for Chrome, Edge and iOS Safari
 
 **This library is in a very early stage.** Currently it has square wave only.   
-Working demo is [available here](http://framesynthesis.com/experiments/synthesis.js/examples/showcase/). You can play it with MIDI keyboard or [mml2smf](https://github.com/KatsuomiK/mml2smf) MMLs.
+Working demo is [available here](https://framesynthesis.com/experiments/synthesis.js/examples/showcase/). You can play it with MIDI keyboard or [mml2smf](https://github.com/korinVR/mml2smf) MMLs.
 
 # Usage
 
 ```js
-<script src="synthesis.min.js"></script>
+<script src="synthesis.js"></script>
 ```
 
 ## Process MIDI Message
 
 ```js
-var synthesizer = new synthesisjs.Synthesizer();
+let synthesizer = new synthesisjs.Synthesizer();
 
 setTimeout(function() {
     // Note On
@@ -30,10 +30,10 @@ setTimeout(function() {
 ## Play MML
 
 ```js
-var smf = synthesisjs.mml2smf("t150l8 g4gagrfrerfrg2");
+let smf = synthesisjs.mml2smf("t150l8 g4gagrfrerfrg2");
 
-var synthesizer = new synthesisjs.Synthesizer();
-var smfPlayer = new synthesisjs.SMFPlayer(synthesizer);
+let synthesizer = new synthesisjs.Synthesizer();
+let smfPlayer = new synthesisjs.SMFPlayer(synthesizer);
 smfPlayer.play(smf);
 ```
 
