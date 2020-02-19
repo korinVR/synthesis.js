@@ -6,28 +6,19 @@
   "author": "Katsuomi Kobayashi",
   "license": "MIT",
   "scripts": {
-    "build": "browserify src/main.js -o build/showcase.js",
-    "start": "cd ../.. & browser-sync start --server --no-ghost-mode --startPath examples/showcase --files \"examples/showcase/index.html, examples/showcase/build/**\" --reload-delay 200",
-    "watch": "parallelshell \"watchify src/main.js -o build/showcase.js --debug --verbose --delay 50\" \"npm start\"",
-    "test": "mocha --compilers js:babel/register"
+    "start": "webpack-dev-server",
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "test": "mocha"
   },
-  "browserify": {
-    "transform": [
-      [
-        "babelify", {
-          "blacklist": [
-            "es6.forOf"
-          ]
-        }
-      ]
-    ]
+  "dependencies": {
+    "mml2smf": "0.3.0",
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
   },
   "devDependencies": {
-    "browserify": "*",
-    "watchify": "*", 
-    "babelify": "*",
-    "browser-sync": "*",
-    "parallelshell": "*",
-    "mocha": "*"
+    "mocha": "*",
+    "standard": "^14.3.1"
   }
 }
