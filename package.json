@@ -4,28 +4,21 @@
   "description": "",
   "main": "build/synthesis.js",
   "author": "Katsuomi Kobayashi",
-  "repository": "https://github.com/KatsuomiK/synthesis.js",
+  "repository": "https://github.com/korinVR/synthesis.js",
   "homepage": "http://framesynthesis.com/",
   "license": "MIT",
   "scripts": {
-    "build": "browserify src/main.js --standalone synthesisjs -o build/synthesis.js & uglifyjs build/synthesis.js -o build/synthesis.min.js",
-    "watch": "watchify src/main.js --standalone synthesisjs -o build/synthesis.js --debug --verbose --delay 50",
-    "test": "mocha --compilers js:babel/register"
-  },
-  "browserify": {
-    "transform": [
-      "babelify"
-    ]
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "test": "mocha"
   },
   "dependencies": {
-    "mml2smf": "0.0.11"
+    "mml2smf": "0.3.0",
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.11"
   },
   "devDependencies": {
-    "babel-preset-es2015": "^6.24.1",
-    "babelify": "*",
-    "browserify": "*",
     "mocha": "*",
-    "uglifyjs": "*",
-    "watchify": "*"
+    "standard": "^14.3.1"
   }
 }

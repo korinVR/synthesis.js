@@ -1,21 +1,21 @@
 export default class Platform {
-    static isiOS() {
-        return this.isiPhone() || this.isiPad();
-    }
-    
-    static isiPhone() {
-        if (typeof document === "undefined") {
-            return false;
-        }
+  static isiOS () {
+    return this.isiPhone() || this.isiPad()
+  }
 
-        return window.navigator.userAgent.indexOf("iPhone") >= 0;
+  static isiPhone () {
+    if (typeof document === 'undefined') {
+      return false
     }
-    
-    static isiPad() {
-        if (typeof document === "undefined") {
-            return false;
-        }
 
-        return window.navigator.userAgent.indexOf("iPad") >= 0;
+    return window.navigator.userAgent.indexOf('iPhone') >= 0
+  }
+
+  static isiPad () {
+    if (typeof document === 'undefined') {
+      return false
     }
+
+    return window.navigator.userAgent.indexOf('iPad') >= 0
+  }
 }
