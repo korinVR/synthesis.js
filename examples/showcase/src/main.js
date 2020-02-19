@@ -1,7 +1,8 @@
 import Debug from '../../../src/framesynthesis/Debug'
 import VirtualKeyboard from './VirtualKeyboard'
 
-const synthesizer = new synthesisjs.Synthesizer({ verbose: true })
+let synthesizer;
+let smfPlayer;
 
 const virtualKeyboard = new VirtualKeyboard(synthesizer)
 
@@ -39,9 +40,16 @@ function onMIDIMessage (event) {
   synthesizer.processMIDIMessage(event.data)
 }
 
-const smfPlayer = new synthesisjs.SMFPlayer(synthesizer)
+function initializeSynthesizer () {
+  if (!synthesizer) {
+    synthesizer = new synthesisjs.Synthesizer({ verbose: true })
+    smfPlayer = new synthesisjs.SMFPlayer(synthesizer)
+  }
+}
 
 function playSMF () {
+  initializeSynthesizer()
+
   Debug.log('Play test SMF')
 
   const tick = 24
@@ -81,6 +89,8 @@ window.playSMF = playSMF
 window.stopSMF = stopSMF
 
 function playMML () {
+  initializeSynthesizer()
+
   const mml = document.getElementById('mml').value
   Debug.log('Convert MML: ' + mml)
   try {
