@@ -5,7 +5,7 @@
   "main": "build/synthesis.js",
   "author": "Katsuomi Kobayashi",
   "repository": "https://github.com/korinVR/synthesis.js",
-  "homepage": "http://framesynthesis.com/",
+  "homepage": "https://framesynthesis.com/",
   "license": "MIT",
   "scripts": {
     "build": "webpack",
